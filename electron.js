@@ -1,25 +1,24 @@
-const { app, BrowserWindow, Menu } = require("electron")
-// const Store = require("./store");
-
-// // // First instantiate the class
-// // const store = new Store({
-// //   // We'll call our data file 'user-preferences'
-// //   configName: 'wallpaper-fire',
-// //   defaults: {
-// //     // 800x600 is the default size of our window
-// //     windowBounds: { width: 800, height: 600 }
-// //   }
-// // });
+const { app, BrowserWindow, Menu } = require("electron");
+const fs = require("fs");
 
 app.on("ready", () => {
-  const win = new BrowserWindow()
+  const win = new BrowserWindow({
+    webPreferences:{
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true
+    }
+  })
   
   win.setBounds({
     x: 0,
     y: 0,
     width: 900,
     height: 600
-  })
+  });
+
+  if(!fs.existsSync(`${app.getPath("videos")}/wallpaper-fire`)){
+    fs.mkdirSync(`${app.getPath("videos")}/wallpaper-fire`);
+  }
 
   win.loadFile("./dist/index.html")
 

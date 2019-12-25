@@ -1,45 +1,65 @@
 <template>
   <v-row class="home">
+    
     <v-col cols="6">
-      <list :items="state.files" />
+      <list
+        @select-item="setVideo"
+        @delete-item="deleteVideo"
+        :items="state.videos" />
     </v-col>
+    
     <v-col cols="4">
+      <v-btn @click="addVideo">add file</v-btn>
+    </v-col>
+    
+    <v-col
+      v-if="state.videoSrc"
+      cols="12">
       <video
         controls
         width="100%"
         height="100%"
-        :src="state.video"></video>
-        <v-btn @click="showPath">Teste</v-btn>
+        :src="state.videoSrc" />
     </v-col>
+
   </v-row>
 </template>
 
 <script lang="ts">
-import { reactive } from "@vue/composition-api";
-// const electron = require("../../../node_modules/electron/index")
+import { reactive, computed } from "@vue/composition-api";
 
 export default {
   name: "home",
   components: {
     List: () => import("./list.vue")
   },
-  setup () {
+  setup (props: any, {root}: any) {
     const state = reactive({
-      files: ["teste-"],
-      video: "/home/henryque/Videos/[Eng Sub] Sewayaki Kitsune no Senko-san Anime PV.mp4"
+      videos: computed(() => root.$store.state.videos),
+      videoSrc: ""
     });
 
-    const showPath = () => {
-      // const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-  
-      // console.log("teste")
-      // console.log(userDataPath)
+    root.$store.dispatch("setVideos");
+
+    const addVideo = () => {
+      root.$store.dispatch("addVideo");
     }
 
+    const setVideo = (fileName: string) => {
+      const path = `${root.$store.state.videosPath}/${fileName}`
+      state.videoSrc = path;
+    }
+
+    const deleteVideo = async (fileName: string) => {
+      await root.$store.dispatch("deleteVideo", fileName);
+    }
+    
 
     return {
       state,
-      showPath
+      addVideo,
+      setVideo,
+      deleteVideo
     }
   }
 }
