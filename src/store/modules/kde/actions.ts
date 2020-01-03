@@ -18,6 +18,7 @@ const getScript = (file: string) => {
 const actions = {
     async setWallpaperVideo ({ rootState }: any) {
         const command = getScript(rootState.videos.current as string);
+        console.log(command)
         try {
             const { stdout, stderr } = await exec(command);
             console.log("sucess", stdout, stderr);

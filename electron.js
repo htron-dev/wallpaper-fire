@@ -5,7 +5,8 @@ app.on("ready", () => {
     let window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
-            nodeIntegrationInWorker: true
+            nodeIntegrationInWorker: true,
+            webSecurity: process.env.NODE_ENV === "production"
         }
     });
 
@@ -16,8 +17,8 @@ app.on("ready", () => {
         height: 600
     });
 
-    if (!fs.existsSync(`${app.getPath("videos")}/wallpaper-fire`)) {
-        fs.mkdirSync(`${app.getPath("videos")}/wallpaper-fire`);
+    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire.json`)) {
+        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire.json`, "{}");
     }
 
     if (process.env.NODE_ENV === "production") {

@@ -2,7 +2,7 @@
   <v-app>
     <w-drawer app />
     <v-content>
-      <v-container fluid>
+      <v-container fluid fill-height>
         <router-view />
       </v-container>
     </v-content>
@@ -15,7 +15,8 @@ export default createComponent({
     components: {
         WDrawer: () => import("@/components/WDrawer/index.vue")
     },
-    setup () {
+    setup (props, { root }) {
+        root.$store.dispatch("db/setDB");
         return {
 
         };

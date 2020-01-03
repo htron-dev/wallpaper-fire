@@ -5,12 +5,14 @@ const fs = window.require("fs");
 const path = window.require("path");
 
 const actions: ActionTree<RootState, RootState> = {
-    async setVideos ({ state, commit }) {
-        const files = fs.readdirSync(state.videos.path);
-        commit("SET_VIDEOS", files);
+    
+    async setWallpapers ({ state, commit, rootGetters }) {
+        const db = rootGetters["db/get"];
+        const videos = db.get("videos").value();
+        commit("SET_VIDEOS", videos);
     },
-    async setCurrentVideo ({ state, commit, dispatch }, fileName: string) {
-        commit("SET_CURRENT_VIDEO", `${state.videos.path}/${fileName}`);
+    async setCurrentVideo ({ state, commit, dispatch }, filePath: string) {
+        commit("SET_CURRENT_VIDEO", filePath);
         dispatch("kde/setWallpaperVideo", { root: true });
     },
     async addVideo ({ state, dispatch }) {

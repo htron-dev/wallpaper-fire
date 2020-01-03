@@ -44,7 +44,7 @@ import { createComponent, reactive } from "@vue/composition-api";
 export default createComponent({
     setup () {
         const state = reactive({
-            mini: false,
+            mini: true,
             menuItems: [
                 {
                     title: "Wallpapers",

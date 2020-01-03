@@ -7,7 +7,7 @@ const routes = [
     {
         path: "/",
         name: "home",
-        component: () => import("./../views/home/index.vue")
+        redirect: "/wallpaper"
     },
     {
         path: "/settings",

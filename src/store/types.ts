@@ -1,6 +1,6 @@
 
 export type RootState = {
-    appPath: string
+    appPath: string,
     videos: {
         path: string, // pass of videos folder
         all: string[], // array with the name of all videos
