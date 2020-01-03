@@ -10,15 +10,15 @@
 </template>
 
 <script lang="ts">
-  import { createComponent } from "@vue/composition-api";
-  export default createComponent({
-    components:{
-      WDrawer: () => import("@/components/WDrawer/index.vue")
+import { createComponent } from "@vue/composition-api";
+export default createComponent({
+    components: {
+        WDrawer: () => import("@/components/WDrawer/index.vue")
     },
-    setup(){
-      return {
+    setup () {
+        return {
 
-      }
+        };
     }
-  })
+});
 </script>

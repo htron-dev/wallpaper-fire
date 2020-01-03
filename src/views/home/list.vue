@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { reactive }from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 
 export default {
     props: {
@@ -30,17 +30,16 @@ export default {
             default: () => []
         }
     },
-    setup(){
-        
+    setup () {
         const state = reactive({
 
         });
 
         return {
-            state,
-        }
+            state
+        };
     }
-}
+};
 
 </script>
 

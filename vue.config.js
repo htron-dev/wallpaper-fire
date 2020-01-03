@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: "./",
-  lintOnSave: false,
-  configureWebpack: {}
-}
+    publicPath: "./",
+    lintOnSave: false,
+    configureWebpack: {}
+};

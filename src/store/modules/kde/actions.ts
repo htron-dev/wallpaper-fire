@@ -1,4 +1,4 @@
-const exec = window.require('child_process').exec;
+const exec = window.require("child_process").exec;
 const getScript = (file: string) => {
     const plasmaScript = `dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
     var Desktops = desktops();                                                                                                                       
@@ -13,19 +13,18 @@ const getScript = (file: string) => {
     }'`;
 
     return plasmaScript;
-}
+};
 
 const actions = {
-    async setWallpaperVideo({rootState}: any){
+    async setWallpaperVideo ({ rootState }: any) {
         const command = getScript(rootState.videos.current as string);
         try {
-            
-            const { stdout, stderr } = await exec(command)
-            console.log("sucess", stdout, stderr)
+            const { stdout, stderr } = await exec(command);
+            console.log("sucess", stdout, stderr);
         } catch (error) {
             console.log(error);
         }
     }
-}
+};
 
 export default actions;

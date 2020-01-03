@@ -4,7 +4,7 @@
     :mini-variant="state.mini"
     v-bind="$attrs">
       <v-list>
-        
+
         <v-list-item>
           <v-list-item-action>
             <v-btn color="red" icon>
@@ -16,7 +16,7 @@
 
           <v-list-item-content>
             <v-list-item-title>Wallpaper Fire</v-list-item-title>
-          </v-list-item-content>          
+          </v-list-item-content>
         </v-list-item>
 
         <v-divider />
@@ -42,27 +42,27 @@
 import { createComponent, reactive } from "@vue/composition-api";
 
 export default createComponent({
-  setup(){
-    const state = reactive({
-      mini: false,
-      menuItems:[
-        {
-          title: "Wallpapers",
-          icon: "mdi-image-multiple",
-          to: { name:"wallpaper" }
-        },
-        {
-          title: "Settings",
-          icon: "mdi-settings",
-          to: { name:"settings" }
-        },
-      ]
-    });
-    return {
-      state
+    setup () {
+        const state = reactive({
+            mini: false,
+            menuItems: [
+                {
+                    title: "Wallpapers",
+                    icon: "mdi-image-multiple",
+                    to: { name: "wallpaper" }
+                },
+                {
+                    title: "Settings",
+                    icon: "mdi-settings",
+                    to: { name: "settings" }
+                }
+            ]
+        });
+        return {
+            state
+        };
     }
-  }
-})
+});
 </script>
 
 <style>
