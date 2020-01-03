@@ -13,13 +13,13 @@
     </v-col>
     
     <v-col
-      v-if="state.videoSrc"
+      v-if="state.currentVideo"
       cols="12">
       <video
         controls
         width="100%"
         height="100%"
-        :src="state.videoSrc" />
+        :src="state.currentVideo" />
     </v-col>
 
   </v-row>
@@ -35,8 +35,8 @@ export default {
   },
   setup (props: any, {root}: any) {
     const state = reactive({
-      videos: computed(() => root.$store.state.videos),
-      videoSrc: ""
+      videos: computed(() => root.$store.state.videos.all),
+      currentVideo: computed(() => root.$store.state.videos.current),
     });
 
     root.$store.dispatch("setVideos");
@@ -46,8 +46,7 @@ export default {
     }
 
     const setVideo = (fileName: string) => {
-      const path = `${root.$store.state.videosPath}/${fileName}`
-      state.videoSrc = path;
+      root.$store.dispatch("setCurrentVideo", fileName);
     }
 
     const deleteVideo = async (fileName: string) => {
