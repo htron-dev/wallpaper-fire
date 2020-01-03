@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "npm run serve & npm run electron",
+    "electron":"electron .",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "dev": "npx nodemon -e ts,vue --exec npm start",
     "lint:fix": "vue-cli-service lint --fix",
     "start": "vue-cli-service build --mode=development && electron ."
   },

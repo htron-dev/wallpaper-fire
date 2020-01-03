@@ -20,7 +20,11 @@ app.on("ready", () => {
     fs.mkdirSync(`${app.getPath("videos")}/wallpaper-fire`);
   }
 
-  win.loadFile("./dist/index.html")
+  if (process.env.NODE_ENV === "production") {
+    win.loadFile("./dist/index.html");
+  } else {
+    win.loadURL("http://localhost:8080");
+  }
 
   // build menu
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
