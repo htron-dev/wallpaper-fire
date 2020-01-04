@@ -1,27 +1,38 @@
 <template>
     <v-form
+        ref="form"
         @submit.prevent="submit">
         <v-card>
             <v-card-text>
                 <div
                     v-if="!state.path"
-                    class="text-center">
-                    <v-btn @click="setFile">select file</v-btn>
+                    class="text-center my-8">
+                    <v-btn
+                        color="blue"
+                        class="white--text"
+                        @click="setFile">
+                        select file
+                        <v-icon class="pl-3">mdi-file</v-icon>
+                    </v-btn>
                 </div>
                 <v-row v-else>
                     <v-col
                         cols="12"
                         md="4">
-                        <video
-                            width="100%"
-                            height="100%"
-                            controls
-                            :src="'file://' + state.path"></video>
+                        <v-slider
+                            v-model="state.slide"
+                            label="Choose thumbnail"
+                            max="100"
+                            min="1"
+                        />
+                        <v-img :src="state.thumb" />
                     </v-col>
                     <v-col>
                         <v-text-field
+                            v-model="state.title"
+                            :rules="[v => !!v || 'Required field']"
                             label="Title"
-                            v-model="state.title" />
+                        />
                         <v-textarea
                             @keyup.ctrl.enter="submit"
                             label="Description"
@@ -44,7 +55,7 @@
 </template>
 
 <script>
-import { createComponent, reactive } from "@vue/composition-api";
+import { createComponent, reactive, watch, ref } from "@vue/composition-api";
 
 const { dialog } = window.require("electron").remote;
 const fs = window.require("fs");
@@ -53,17 +64,28 @@ const path = window.require("path");
 export default createComponent({
     setup (props, { emit, root }) {
         const state = reactive({
+            slide: 1,
             path: "",
             title: "",
             description: "",
             extname: "",
             thumb: ""
-
         });
+
+        const form = ref(null);
+
+        const video = document.createElement("video");
 
         const close = () => {
             emit("close");
         };
+
+        watch(() => state.slide, (old, newSlide) => {
+            console.log(newSlide);
+            if (video && video.duration && video.duration !== Infinity) {
+                video.currentTime = Math.ceil((newSlide / 100) * video.duration);
+            }
+        });
 
         const setFile = async () => {
             const options = {
@@ -81,9 +103,47 @@ export default createComponent({
             state.title = path.basename(file.filePaths[0]).replace(state.extname, "");
 
             state.path = file.filePaths[0];
+
+            video.setAttribute("src", `file://${state.path}`);
+            video.setAttribute("type", `video/${state.extname.replace(".", "")}`);
+
+            video.addEventListener("timeupdate", () => {
+                console.log(video.currentTime);
+                if (video.duration === Infinity) {
+                }
+            });
+
+            video.addEventListener("loadedmetadata", () => {
+                if (video.duration === Infinity) {
+                    video.currentTime = 999999999;
+                } else {
+                    video.currentTime = Math.ceil(0.5 * video.duration);
+                }
+            });
+
+            video.addEventListener("seeked", () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const context = canvas.getContext("2d");
+
+                canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+                canvas.toBlob(blob => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob)
+                    reader.onloadend = () => {
+                        const base64 = reader.result;
+                        state.thumb = base64;
+                    };
+                });
+            });
         };
 
         const submit = () => {
+            if (!form.value.validate()) {
+                return;
+            }
             const wallpaper = {
                 path: state.path,
                 title: state.title,
@@ -98,6 +158,7 @@ export default createComponent({
         };
 
         return {
+            form,
             setFile,
             submit,
             state,
