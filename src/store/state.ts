@@ -3,9 +3,10 @@ const { remote } = window.require("electron");
 
 const state: RootState = {
     appPath: remote.app.getAppPath(),
-    videos: {
-        path: remote.app.getPath("videos") + "/wallpaper-fire",
+    wallpapers: {
+        lastId: 0,
         current: null,
+        config: {},
         all: []
     }
 };

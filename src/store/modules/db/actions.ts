@@ -9,8 +9,16 @@ const actions: ActionTree<DBState, RootState> = {
         const db = low(adapter);
         
         db.defaults({
-            global:{},
-            videos: []
+            app: {
+                heigth: "",
+                width: ""
+            },
+            wallpapers: {
+                lastId: 1,
+                global: {},
+                current: null,
+                all:[]
+            }
         }).write();
 
         commit("SET_DB", db);

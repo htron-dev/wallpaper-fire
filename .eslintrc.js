@@ -13,7 +13,8 @@ module.exports = {
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
         "quotes": ["error", "double"],
         "indent": ["error", 4],
-        "semi": ["error", "always"]
+        "semi": ["error", "always"],
+        "vue/html-indent": ["error", 4]
     },
     parserOptions: {
         parser: "@typescript-eslint/parser"

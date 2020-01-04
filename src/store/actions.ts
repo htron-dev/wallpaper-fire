@@ -6,47 +6,57 @@ const path = window.require("path");
 
 const actions: ActionTree<RootState, RootState> = {
     
-    async setWallpapers ({ state, commit, rootGetters }) {
+    async setWallpapers ({ commit, rootGetters }) {
         const db = rootGetters["db/get"];
-        const videos = db.get("videos").value();
-        commit("SET_VIDEOS", videos);
+        const wallpapers = db.get("wallpapers.all").value();        
+        commit("SET_WALLPAPERS", wallpapers);
     },
-    async setCurrentVideo ({ state, commit, dispatch }, filePath: string) {
-        commit("SET_CURRENT_VIDEO", filePath);
+    async setDescktopWallpaper ({ rootGetters,commit, dispatch }, wallpaper: any) {
+        
+        if(!wallpaper){
+            throw new Error("Invalid wallpaper");
+        }
+
+        const db = rootGetters["db/get"];
+        db.set("wallpapers.current", wallpaper).write();
+        commit("SET_CURRENT_WALLPAPER", wallpaper);
         dispatch("kde/setWallpaperVideo", { root: true });
     },
-    async addVideo ({ state, dispatch }) {
-        const options = {
-            properties: [ "openFile", "multiSelections"]
-        };
-
-        const file = await remote.dialog.showOpenDialog(options);
-
-        if (file.canceled) {
-            return;
+    async addWallpaper ({ rootGetters, dispatch }, wallpaper) {        
+        if (!wallpaper.path) {
+            throw new Error("Invalid path");
         }
 
-        const filePath = file.filePaths[0];
-        const fileName = path.basename(filePath);
+        if (!wallpaper.title) {
+            throw new Error("Invalid title");
+        } 
+        
+        const db = rootGetters["db/get"];
 
-        const copy = fs.copyFileSync(filePath, `${state.videos.path}/${fileName}`);
-
-        if (copy) {
-            throw new Error(copy);
+        const id = db.get("wallpapers.lastId").value();
+        wallpaper = {
+            ...wallpaper,
+            id
         }
+    
+        db.get('wallpapers.all').push(wallpaper).write();
+        db.set("wallpapers.lastId", id + 1).write();
 
-        dispatch("setVideos");
+        dispatch("setWallpapers");
     },
-    async deleteVideo ({ state, dispatch }, fileName: string) {
-        const filePath = `${state.videos.path}/${fileName}`;
-
-        const deleteFile = fs.unlinkSync(filePath);
-
-        if (deleteFile) {
-            console.log(fileName);
+    async deleteWallpaper ({ rootGetters, dispatch }, id: number) {
+        console.log(id);
+        if (!id) {
+            throw new Error("Invalid id");
         }
+        const db = rootGetters["db/get"];
 
-        dispatch("setVideos");
+        console.log(id)
+
+        db.get("wallpapers.all").remove({id}).write();
+        
+        dispatch("setWallpapers");
+
     }
 };
 

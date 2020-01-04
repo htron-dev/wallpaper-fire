@@ -1,13 +1,14 @@
 <template>
-    <v-form @submit.prevent="submit">
+    <v-form
+        @submit.prevent="submit">
         <v-card>
             <v-card-text>
                 <div
-                    v-if="!state.filePath"
+                    v-if="!state.path"
                     class="text-center">
                     <v-btn @click="setFile">select file</v-btn>
                 </div>
-                <v-row>
+                <v-row v-else>
                     <v-col
                         cols="12"
                         md="4">
@@ -15,19 +16,26 @@
                             width="100%"
                             height="100%"
                             controls
-                            :src="'file://' + state.filePath"></video>
+                            :src="'file://' + state.path"></video>
                     </v-col>
                     <v-col>
                         <v-text-field
                             label="Title"
-                            v-model="state.title"></v-text-field>
+                            v-model="state.title" />
+                        <v-textarea
+                            @keyup.ctrl.enter="submit"
+                            label="Description"
+                            v-model="state.description" />
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <v-btn
-                    :disabled="state.filePath === ''"
+                    @click="close"
+                    color="error">cancel</v-btn>
+                <v-btn
+                    :disabled="state.path === ''"
                     color="success"
                     type="submit">save</v-btn>
             </v-card-actions>
@@ -40,14 +48,17 @@ import { createComponent, reactive } from "@vue/composition-api";
 
 const { dialog } = window.require("electron").remote;
 const fs = window.require("fs");
+const path = window.require("path");
 
 export default createComponent({
-    setup (props, { emit }) {
+    setup (props, { emit, root }) {
         const state = reactive({
-            filePath: "",
-            videoBuffer: Buffer,
+            path: "",
             title: "",
+            description: "",
+            extname: "",
             thumb: ""
+
         });
 
         const close = () => {
@@ -66,24 +77,31 @@ export default createComponent({
                 close();
                 return;
             }
+            state.extname = path.extname(file.filePaths[0]);
+            state.title = path.basename(file.filePaths[0]).replace(state.extname, "");
 
-            const read = await fs.readFileSync(file.filePaths[0]);
-            state.videoBuffer = read;
-
-            console.log(file);
-
-            state.filePath = file.filePaths[0];
-
+            state.path = file.filePaths[0];
         };
 
         const submit = () => {
-            console.log(state.filePath);
+            const wallpaper = {
+                path: state.path,
+                title: state.title,
+                description: state.description,
+                extname: state.extname,
+                timestamp: Date.now(),
+                thumb: state.thumb
+            };
+
+            root.$store.dispatch("addWallpaper", wallpaper);
+            close();
         };
 
         return {
             setFile,
             submit,
-            state
+            state,
+            close
         };
     }
 });

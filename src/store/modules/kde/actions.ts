@@ -1,3 +1,6 @@
+import { ActionTree } from "vuex";
+import { RootState } from "@/store";
+
 const exec = window.require("child_process").exec;
 const getScript = (file: string) => {
     const plasmaScript = `dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
@@ -15,15 +18,13 @@ const getScript = (file: string) => {
     return plasmaScript;
 };
 
-const actions = {
-    async setWallpaperVideo ({ rootState }: any) {
-        const command = getScript(rootState.videos.current as string);
-        console.log(command)
+const actions: ActionTree<{}, RootState> = {
+    async setWallpaperVideo ({ rootState }) {
+        const command = getScript(rootState.wallpapers.current.path);
         try {
             const { stdout, stderr } = await exec(command);
-            console.log("sucess", stdout, stderr);
         } catch (error) {
-            console.log(error);
+            
         }
     }
 };
