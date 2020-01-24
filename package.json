@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "lint:fix": "vue-cli-service lint --fix",
-    "start": "vue-cli-service build --mode=development && electron ."
+    "start": "vue-cli-service build && electron ."
   },
   "main": "electron.js",
   "dependencies": {

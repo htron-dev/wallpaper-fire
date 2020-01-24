@@ -11,16 +11,20 @@ const actions: ActionTree<RootState, RootState> = {
         const wallpapers = db.get("wallpapers.all").value();        
         commit("SET_WALLPAPERS", wallpapers);
     },
-    async setDescktopWallpaper ({ rootGetters,commit, dispatch }, wallpaper: any) {
+    async setDescktopWallpaper ({ rootGetters, dispatch }, wallpaper: any) {
         
         if(!wallpaper){
             throw new Error("Invalid wallpaper");
         }
 
+        const options = {
+            videoPath: wallpaper.path,
+        };
+
+        dispatch("kde/setWallpaperVideo", options, { root: true });
+
         const db = rootGetters["db/get"];
-        db.set("wallpapers.current", wallpaper).write();
-        commit("SET_CURRENT_WALLPAPER", wallpaper);
-        dispatch("kde/setWallpaperVideo", { root: true });
+        db.set("history.lastWallpaperId", wallpaper.id).write();
     },
     async addWallpaper ({ rootGetters, dispatch }, wallpaper) {        
         if (!wallpaper.path) {

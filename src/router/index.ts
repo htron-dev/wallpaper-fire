@@ -17,7 +17,21 @@ const routes = [
     {
         path: "/wallpaper",
         name: "wallpaper",
-        component: () => import("./../views/wallpaper/index.vue")
+        redirect: "/wallpaper/all",
+        component: () => import("./../views/wallpaper/index.vue"),
+        children: [
+            {
+                path: "all",
+                name: "wallpaper-all",
+                component: () => import("./../views/wallpaper/WallpaperAll.vue"),
+            },
+            {
+                path: "playlist",
+                name: "wallpaper-playlist",
+                component: () => import("./../views/wallpaper/WallpaperPlaylist.vue"),
+            },
+
+        ],
     }
 ];
 

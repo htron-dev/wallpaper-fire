@@ -1,10 +1,17 @@
-
+import { PlayListState } from "@/store/modules/playlist/state";
 export type RootState = {
     appPath: string,
+    app: {
+        heigth: string,
+        width: string
+    },
+    history: {
+        lastWallpaperId: null | number,
+        lastPlaylistId: null | number,
+    },
     wallpapers: {
         lastId: number,
-        current: null | any, // current wallpaper active
         all: string[], // array with the name of all videos
-        config: any, // the name of the curren video playing
-    }
+    },
+    playlist: PlayListState,
 }

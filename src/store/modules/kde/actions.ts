@@ -19,8 +19,8 @@ const getScript = (file: string) => {
 };
 
 const actions: ActionTree<{}, RootState> = {
-    async setWallpaperVideo ({ rootState }) {
-        const command = getScript(rootState.wallpapers.current.path);
+    async setWallpaperVideo ({ rootState }, { videoPath }) {
+        const command = getScript(videoPath);
         try {
             const { stdout, stderr } = await exec(command);
         } catch (error) {

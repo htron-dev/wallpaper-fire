@@ -7,19 +7,26 @@ const actions: ActionTree<DBState, RootState> = {
     setDB({ state, commit }){        
         const adapter = new FileSync(state.path);
         const db = low(adapter);
-        
-        db.defaults({
+        const defaultBD: RootState = {
+            appPath: "",
             app: {
                 heigth: "",
                 width: ""
             },
+            history: {
+                lastWallpaperId: null,
+                lastPlaylistId: null,
+            },
             wallpapers: {
                 lastId: 1,
-                global: {},
-                current: null,
                 all:[]
+            },
+            playlist: {
+                all: []
             }
-        }).write();
+        };
+        
+        db.defaults(defaultBD).write();
 
         commit("SET_DB", db);
     },

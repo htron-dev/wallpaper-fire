@@ -1,7 +1,7 @@
 <template>
     <v-navigation-drawer
         right
-        height="100%"
+        max-height="100%"
         width="100%"
         permanent
     >
@@ -42,9 +42,9 @@
                 :key="wallpaper.id"
                 @click="setwallpaper(wallpaper)"
             >
-                <v-list-item-avatar>
-                    <v-image v-if="wallpaper.thumb" :src="wallpaper.thumb" />
-                    <v-icon v-else x-large>mdi-image</v-icon>
+                <v-list-item-avatar size="60px">
+                    <v-img v-if="wallpaper.thumb" :src="wallpaper.thumb" />
+                    <v-icon v-else size="50px">mdi-image</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title>{{ wallpaper.title }}</v-list-item-title>
@@ -52,13 +52,13 @@
                     <v-list-item-subtitle class="caption">{{ wallpaper.path }}</v-list-item-subtitle>
                 </v-list-item-content>
 
-                <v-list-item-action>
+                <v-list-item-action >
                     <v-btn
                         color="grey lighten-1"
                         icon
                         @click.stop="handleDeleteWallpaper(wallpaper)"
                     >
-                        <v-icon>mdi-delete</v-icon>
+                        <v-icon >mdi-delete</v-icon>
                     </v-btn>
                 </v-list-item-action>
             </v-list-item>
