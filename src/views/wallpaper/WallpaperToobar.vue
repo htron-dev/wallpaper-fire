@@ -9,7 +9,7 @@
                 text
                 color='blue'>
                 <span class="text-center">
-                    <v-icon class="d-block mb-1" dark>mdi-cloud-upload</v-icon>
+                    <v-icon class="d-block mb-1" dark>{{ item.icon }}</v-icon>
                     {{item.text}}
                 </span>
             </v-btn>
@@ -24,12 +24,14 @@ export default createComponent({
         const items = [
             {
                 text: "All videos",
+                icon: "mdi-youtube",
                 to: { name: "wallpaper-all" }
             },
             {
                 text: "Playlists",
+                icon: "mdi-library-video",
                 to: { name: "wallpaper-playlist" }
-            },
+            }
         ];
         return {
             items

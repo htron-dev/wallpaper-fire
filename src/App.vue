@@ -1,12 +1,12 @@
 <template>
-  <v-app>
-    <w-drawer app />
-    <v-content>
-      <v-container fluid fill-height>
-        <router-view />
-      </v-container>
-    </v-content>
-  </v-app>
+    <v-app>
+        <w-drawer app />
+        <v-content>
+            <v-container fluid fill-height>
+                <router-view />
+            </v-container>
+        </v-content>
+    </v-app>
 </template>
 
 <script lang="ts">
@@ -20,9 +20,7 @@ export default createComponent({
     setup (props, { root }) {
         provideStore(root.$store);
         root.$store.dispatch("db/setDB");
-        return {
-
-        };
+        return {};
     }
 });
 </script>
