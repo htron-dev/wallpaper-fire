@@ -2,44 +2,58 @@ const { app, BrowserWindow, Menu } = require("electron");
 const fs = require("fs");
 
 app.on("ready", () => {
-  const win = new BrowserWindow({
-    webPreferences:{
-      nodeIntegration: true,
-      nodeIntegrationInWorker: true
+    let window = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            webSecurity: process.env.NODE_ENV === "production"
+        }
+    });
+
+    window.setBounds({
+        x: 0,
+        y: 0,
+        width: 900,
+        height: 600
+    });
+
+    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire.json`)) {
+        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire.json`, "{}");
     }
-  })
-  
-  win.setBounds({
-    x: 0,
-    y: 0,
-    width: 900,
-    height: 600
-  });
 
-  if(!fs.existsSync(`${app.getPath("videos")}/wallpaper-fire`)){
-    fs.mkdirSync(`${app.getPath("videos")}/wallpaper-fire`);
-  }
+    if (process.env.NODE_ENV === "production") {
+        window.loadFile("./dist/index.html");
+    } else {
+        window.loadURL("http://localhost:8080");
+        window.webContents.openDevTools();
+    }
 
-  win.loadFile("./dist/index.html")
+    // build menu
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
 
-  // build menu
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
+    // insert menu
+    Menu.setApplicationMenu(mainMenu);
 
-  // insert menu
-  Menu.setApplicationMenu(mainMenu);  
-})
+    window.on("close", () => {
+        window = null;
+    });
+});
 
-const mainMenuTemplate = [
-  {
-    label: "File"
-  }
-]
+const mainMenuTemplate = [];
 
 if (process.env.NODE_ENV !== "production") {
-  mainMenuTemplate.push({
-    label: "Developer tools",
-    click (item, focusedWindow) {
-      focusedWindow.toggleDevTools()
-    }
-  })
+    mainMenuTemplate.push(
+        {
+            label: "Developer tools",
+            click (item, focusedWindow) {
+                focusedWindow.openDevTools();
+            }
+        },
+        {
+            label: "Reload",
+            click (item, focusedWindow) {
+                focusedWindow.reload();
+            }
+        }
+    );
 }
