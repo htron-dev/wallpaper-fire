@@ -1,19 +1,19 @@
 export type PlayList = {
-    id: number,
-    title: string,
-    description?: string,
-    wallpapersIds: number[],
-    thumb: string | null,
+    id: number;
+    title: string;
+    description?: string;
+    wallpaperIds: number[];
+    thumb: string | null;
     config: {
         delay: number, // number of miliconds to change the wallpapers
     },
 };
 export type PlayListState = {
-    all: PlayList[],
+    timer: any | null;
 };
 
 const state: PlayListState = {
-    all: []
+    timer: null
 };
 
 export default state;

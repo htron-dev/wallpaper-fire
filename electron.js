@@ -1,5 +1,7 @@
 const { app, BrowserWindow, Menu } = require("electron");
 const fs = require("fs");
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
 
 app.on("ready", () => {
     let window = new BrowserWindow({
@@ -9,13 +11,11 @@ app.on("ready", () => {
             webSecurity: process.env.NODE_ENV === "production"
         }
     });
+    const adapter = new FileSync(`${app.getPath("userData")}/wallpaperFire.json`);
+    const db = low(adapter);
+    const appConfig = db.get("app").value();
 
-    window.setBounds({
-        x: 0,
-        y: 0,
-        width: 900,
-        height: 600
-    });
+    window.setBounds(appConfig.window);
 
     if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire.json`)) {
         fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire.json`, "{}");
@@ -25,7 +25,6 @@ app.on("ready", () => {
         window.loadFile("./dist/index.html");
     } else {
         window.loadURL("http://localhost:8080");
-        window.webContents.openDevTools();
     }
 
     // build menu
@@ -33,7 +32,10 @@ app.on("ready", () => {
 
     // insert menu
     Menu.setApplicationMenu(mainMenu);
-
+    // resise options
+    window.on("resize", () => {
+        db.set("app.window", window.getBounds()).write();
+    });
     window.on("close", () => {
         window = null;
     });
