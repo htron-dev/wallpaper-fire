@@ -10,7 +10,7 @@ export type DBState = {
 };
 
 const state: DBState = {
-    path: remote.app.getPath("userData") + "/wallpaperFire.json",
+    path: remote.app.getPath("userData") + "/wallpaperFire/config.json",
     db: null
 }
 

@@ -20,6 +20,7 @@ export default createComponent({
     setup (props, { root }) {
         provideStore(root.$store);
         root.$store.dispatch("db/setDB");
+        root.$store.dispatch("setup");
         return {};
     }
 });

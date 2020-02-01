@@ -43,7 +43,7 @@
                 @click="setwallpaper(wallpaper)"
             >
                 <v-list-item-avatar size="60px">
-                    <v-img v-if="wallpaper.thumb" :src="wallpaper.thumb" />
+                    <v-img v-if="wallpaper.thumb" :src="'file://' + wallpaper.thumb" />
                     <v-icon v-else size="50px">mdi-image</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>

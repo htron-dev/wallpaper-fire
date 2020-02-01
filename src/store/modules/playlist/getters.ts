@@ -8,6 +8,16 @@ const getters: GetterTree<PlayListState, RootState> = {
         const playlist = db.get("playlist.all").value();
         return playlist;
     },
+    findById: (state, getters, rootState, rootGetters) => (id: number): PlayList => {
+        // // get the db
+        const db = rootGetters["db/get"];
+        // // look for the playlist
+        const playlist = db.get("playlist.all")
+            .find({ id })
+            .value();
+        // // return the list of playlist filered
+        return playlist;
+    },
     create: (state, getters, rootState, rootGetters) => (playlist: PlayList) => {
         const db = rootGetters["db/get"];
         const id = db.get("playlist.lastId").value();

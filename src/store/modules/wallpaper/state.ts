@@ -1,9 +1,10 @@
 export type Wallpaper = {
-    id: number,
-    title: string,
-    description?: string,
-    thumb: string | null,
-    config: any,
+    id: number;
+    path: string;
+    title: string;
+    description?: string;
+    thumb: string | null;
+    config: any;
 };
 export type WallpaperState = {};
 

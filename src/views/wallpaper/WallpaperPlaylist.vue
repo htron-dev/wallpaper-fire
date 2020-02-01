@@ -20,7 +20,7 @@
                                     :key="playlist.id"
                                     v-for="playlist in state.playlists">
                                     <v-list-item-avatar>
-                                        <v-img v-if="playlist.thumb" :src="playlist.thumb" />
+                                        <v-img v-if="playlist.thumb" :src="'file://' + playlist.thumb" />
                                         <v-icon v-else size="50px">mdi-image</v-icon>
                                     </v-list-item-avatar>
                                     <v-list-item-content>
@@ -34,80 +34,84 @@
                             </v-list>
                         </v-col>
                         <v-divider vertical></v-divider>
-                        <v-col v-if="state.selected && state.edit">
-                            <div
-                                class="text-right">
-                                <v-btn
-                                    class="mr-4"
-                                    color="error"
-                                    @click="reset"
-                                >
-                                    Discart changes
-                                </v-btn>
-                                <v-btn
-                                    @click="savePlaylist"
-                                    color="success">
-                                    Save Playlist
-                                </v-btn>
-                                <v-row>
-                                    <v-col cols="12">
-                                        <v-text-field
-                                            v-model="state.editedItem.title"
-                                            label="Title"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-text-field
-                                            v-model="state.editedItem.description"
-                                            label="Description"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <w-time-picker
-                                            v-model="state.editedItem.config.delay"
-                                            return-miliseconds
-                                            prepend-icon="mdi-clock-outline"
-                                            label="Interval" />                                        
-                                    </v-col>
-                                </v-row>
-                            </div>
-                            <w-wallpaper-list
-                                v-if="state.playlistWallpapers"
-                                :hide-actions="state.edit"
-                                :wallpapers="state.playlistWallpapers"
-                            />
-                        </v-col>
-                        <v-col v-else-if="state.selected">
-                            <div class="text-right">
-                                <v-btn
-                                    class="mr-4 white--text"
-                                    color="blue"
-                                    @click="state.edit = true"
-                                >
-                                    Edit
-                                </v-btn>
-                                <v-btn
-                                    color="warning"
-                                    v-if="state.haveActivePlaylist"
-                                    @click="stopPlaylist"
-                                >
-                                    Stop current Playlist
-                                </v-btn>
-                                <v-btn
-                                    v-else
-                                    @click="setPlaylist"
-                                    color="success">Use Playlist
-                                </v-btn>
-                            </div>
-                            <div class="pl-4 mb-4">
-                                <h2 class="title d-block">{{ state.selected.title }}</h2>
-                                <h3 class="subtitle  d-block">{{ state.selected.description }}</h3>
-                            </div>
-                            <w-wallpaper-list
-                                v-if="state.playlistWallpapers"
-                                :hide-actions="state.edit"
-                                :wallpapers="state.playlistWallpapers"
-                            />
+                        <v-col>
+                            <v-row>
+                                <v-col v-if="state.selected && state.edit">
+                                    <div
+                                        class="text-right">
+                                        <v-btn
+                                            class="mr-4"
+                                            color="error"
+                                            @click="reset"
+                                        >
+                                            Discart changes
+                                        </v-btn>
+                                        <v-btn
+                                            @click="savePlaylist"
+                                            color="success">
+                                            Save Playlist
+                                        </v-btn>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    v-model="state.editedItem.title"
+                                                    label="Title"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    v-model="state.editedItem.description"
+                                                    label="Description"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <w-time-picker
+                                                    v-model="state.editedItem.config.delay"
+                                                    return-miliseconds
+                                                    prepend-icon="mdi-clock-outline"
+                                                    label="Interval" />                                        
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+                                </v-col>
+                                <v-col v-else-if="state.selected">
+                                    <div class="text-right">
+                                        <v-btn
+                                            class="mr-4 white--text"
+                                            color="blue"
+                                            @click="editPlaylist"
+                                        >
+                                            Edit
+                                        </v-btn>
+                                        <v-btn
+                                            color="warning"
+                                            v-if="state.haveActivePlaylist"
+                                            @click="stopPlaylist"
+                                        >
+                                            Stop current Playlist
+                                        </v-btn>
+                                        <v-btn
+                                            v-else
+                                            @click="setPlaylist"
+                                            color="success">Use Playlist
+                                        </v-btn>
+                                    </div>
+                                    <div class="pl-4 mb-4">
+                                        <h2 class="title d-block">{{ state.selected.title }}</h2>
+                                        <h3 class="subtitle  d-block">{{ state.selected.description }}</h3>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12">
+                                    <w-wallpaper-list
+                                        v-if="state.playlistWallpapers"
+                                        v-model='state.editedItem.wallpaperIds'
+                                        :show-select='state.edit'
+                                        :show-actions="state.edit"
+                                        icon-delete="mdi-close"
+                                        :wallpapers="state.playlistWallpapers"
+                                    />
+                                </v-col>
+                            </v-row>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -148,6 +152,7 @@ export default createComponent({
             selected: null,
             playlistWallpapers: null,
             editedItem: {
+                wallpaperIds: [],
                 config: {
                     delay: 0
                 }
@@ -160,11 +165,14 @@ export default createComponent({
             })
         });
 
-        const setupPlalists = () => {
-            state.playlists = store.getters["playlist/getAll"];
-            if (!state.selected && state.playlists.length > 1) {
+        const load = () => {
+            setupPlalists();
+            if (state.playlists.length > 1) {
                 showPlaylist(state.playlists[0]);
             }
+        };
+        const setupPlalists = () => {
+            state.playlists = store.getters["playlist/getAll"];
         };
 
         const showPlaylist = (item: PlayList) => {
@@ -179,11 +187,17 @@ export default createComponent({
         };
 
         const reset = () => {
-            if (state.selected) {
-                const plalist = JSON.parse(JSON.stringify(state.selected));
-                state.editedItem = plalist;
-            }
+            state.selected = null;
+            state.playlistWallpapers = null;
+            state.playlists = [];
             state.edit = false;
+            load();
+        };
+
+        const editPlaylist = () => {
+            const wallpapers = store.getters["wallpaper/getAll"];
+            state.playlistWallpapers = wallpapers;
+            state.edit = true;
         };
 
         const savePlaylist = () => {
@@ -193,8 +207,7 @@ export default createComponent({
             const id = state.selected.id;
             const playlist = JSON.parse(JSON.stringify(state.editedItem));
             store.getters["playlist/update"](id, playlist);
-            state.edit = false;
-            setupPlalists();
+            reset();
         };
 
         const setPlaylist = () => {
@@ -202,17 +215,18 @@ export default createComponent({
         };
 
         const stopPlaylist = () => {
-            store.commit("playlist/CLEAR_TIMER");
+            store.dispatch("playlist/stopPlaylist");
         };
 
-        setupPlalists();
+        load();
         return {
             state,
             showPlaylist,
             reset,
             savePlaylist,
             setPlaylist,
-            stopPlaylist
+            stopPlaylist,
+            editPlaylist
         };
     }
 });

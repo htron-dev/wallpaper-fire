@@ -11,14 +11,18 @@ app.on("ready", () => {
             webSecurity: process.env.NODE_ENV === "production"
         }
     });
-    const adapter = new FileSync(`${app.getPath("userData")}/wallpaperFire.json`);
+
+    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire`)) {
+        fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire`);
+        fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire/thumbnails`);
+        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire/config.json`, "{}");
+    }
+
+    const adapter = new FileSync(`${app.getPath("userData")}/config.json`);
     const db = low(adapter);
     const appConfig = db.get("app").value();
-
-    window.setBounds(appConfig.window);
-
-    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire.json`)) {
-        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire.json`, "{}");
+    if (appConfig && appConfig.window) {
+        window.setBounds(appConfig.window);
     }
 
     if (process.env.NODE_ENV === "production") {

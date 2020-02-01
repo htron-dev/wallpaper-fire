@@ -49,7 +49,7 @@
                                     <v-avatar left>
                                         <v-img
                                             v-if="data.item.thumb"
-                                            :src="data.item.thumb">
+                                            :src="'file://' + data.item.thumb">
                                         </v-img>
                                         <v-icon v-else>
                                             mdi-play
@@ -66,7 +66,7 @@
                                     <v-list-item-avatar>
                                         <v-img
                                             v-if="data.item.thumb"
-                                            :src="data.item.thumb">
+                                            :src="'file://' + data.item.thumb">
                                         </v-img>
                                         <v-icon v-else>
                                             mdi-play
