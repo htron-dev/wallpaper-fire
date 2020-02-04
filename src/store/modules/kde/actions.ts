@@ -19,12 +19,12 @@ const getScript = (file: string) => {
 };
 
 const actions: ActionTree<{}, RootState> = {
-    async setWallpaperVideo ({ rootState }, { videoPath }) {
+    async setWallpaperVideo ({ rootState, dispatch }, { videoPath }) {
         const command = getScript(videoPath);
         try {
             const { stdout, stderr } = await exec(command);
         } catch (error) {
-            
+            dispatch("showErrorNotification", "[KDE MODULE] error in set wallpaper");
         }
     }
 };

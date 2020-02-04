@@ -5,11 +5,48 @@
                 <v-card-text>
                     <v-row style="min-height: 80vh;">
                         <v-col>
-                            <wallpaper-preview :wallpaper="state.wallpaper" />
+                            <wallpaper-preview
+                                :wallpaper="state.wallpaper"
+                                @delete-wallpaper="handleDeleteWallpaper"
+                                @edit-wallpaper="handleEditWallpaper"
+                            />
                         </v-col>
-                        <v-col cols="12" md="4">
-                            <WallpaperList
+                        <v-divider class="d-none d-lg-flex" vertical />
+                        <v-col cols="12" md="12" lg="6">
+                            <w-wallpaper-list
+                                :loading="state.loading"
+                                :wallpapers="state.wallpapers"
                                 @select-wallpaper="(wallpaper) => state.wallpaper = wallpaper" />
+                            <v-fab-transition>
+                                <v-btn
+                                    v-show="!state.wallpaperDialog"
+                                    dark
+                                    fixed
+                                    bottom
+                                    right
+                                    fab
+                                    color="success"
+                                    @click="state.wallpaperDialog = true"
+                                >
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </v-fab-transition>
+                            <v-dialog v-model="state.wallpaperDialog" v-if="state.wallpaperDialog" max-width="1000">
+                                <wallpaper-form
+                                    :editable-item="state.editableItem"
+                                    @close="reset" />
+                            </v-dialog>
+                            <v-dialog v-model="state.alertDialog" v-if="state.alertDialog" max-width="1000">
+                                <v-card>
+                                    <v-card-text>Are you sure</v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer />
+                                        <v-btn @click="deleteWallpaper">Yes delete</v-btn>
+                                        <v-btn @click="reset">Cancel</v-btn>
+                                        <v-spacer />
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -19,23 +56,80 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive } from "@vue/composition-api";
+
+import { createComponent, computed, reactive, watch } from "@vue/composition-api";
+import { useStore } from "@/store/use-store";
+import { Wallpaper } from '../../store/modules/wallpaper/state';
 
 type WallpaperState = {
-  wallpaper: null | any
-}
+    wallpaper: Wallpaper | null,
+    wallpapers: Wallpaper[],
+    loading: boolean;
+    wallpaperDialog: boolean;
+    alertDialog: boolean;
+    editableItem: null | any;
+};
 
 export default createComponent({
     components: {
-        WallpaperList: () => import("./WallpaperList.vue"),
+        WallpaperForm: () => import("./WallpaperForm.vue"),
         WallpaperPreview: () => import("./WallpaperPreview.vue")
     },
     setup () {
+        const store = useStore();
+
         const state = reactive<WallpaperState>({
-            wallpaper: null
+            wallpaper: null,
+            wallpapers: [],
+            loading: true,
+            wallpaperDialog: false,
+            alertDialog: false,
+            editableItem: null
         });
+
+        watch(() => state.wallpaperDialog, (value) => {
+            if (!value) {
+                state.editableItem = null;
+            }
+        });
+
+        const setWallpaperList = () => {
+            state.loading = true;
+            state.wallpapers = store.getters["wallpaper/getAll"];
+            setTimeout(() => {
+                state.loading = false;
+            }, 1500);
+        };
+
+        const handleDeleteWallpaper = (wallpaper: Wallpaper) => {
+            state.editableItem = wallpaper;
+            state.alertDialog = true;
+        };
+
+        const handleEditWallpaper = (wallpaper: Wallpaper) => {
+            state.editableItem = wallpaper;
+            state.wallpaperDialog = true;
+        };
+
+        const deleteWallpaper = () => {
+            store.dispatch("wallpaper/delete", state.editableItem.id);
+            reset();
+        };
+
+        const reset = () => {
+            setWallpaperList();
+            state.editableItem = null;
+            state.alertDialog = false;
+            state.wallpaperDialog = false;
+        };
+
+        setWallpaperList();
         return {
-            state
+            state,
+            handleDeleteWallpaper,
+            deleteWallpaper,
+            handleEditWallpaper,
+            reset
         };
     }
 });

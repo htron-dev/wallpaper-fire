@@ -14,17 +14,27 @@ const actions: ActionTree<PlayListState, RootState> = {
         const db = rootGetters["db/get"];
         // set the current playlistId
         db.set("history.lastPlaylistId", playlist.id).write();
-        // get the first wallpaper-id
+        // get id of last played wallpaper
         let wallpaperId = playlist.wallpaperIds[0];
+        // get the first wallpaper-id
+        let lastWallpaperId = db.get("history.lastWallpaperId").value();
+        if (playlist.wallpaperIds.includes(lastWallpaperId)) {
+            wallpaperId = lastWallpaperId;
+        }
         // get the wallpaper using the id
         let wallpaper = rootGetters["wallpaper/findById"](wallpaperId);
         // set the firs wallpaper
         dispatch("setDescktopWallpaper", wallpaper, { root: true });
         // init count
         let count = 0;
-        
         // function to handle the cicles of wallpapers changes
         const loopToSetItenvals = () => {
+            if (lastWallpaperId) {
+                count = playlist.wallpaperIds
+                    .findIndex(id => id === lastWallpaperId);
+                lastWallpaperId = null;
+                return;
+            }
             // increment count
             count++;
             // get the next wallpaper id
@@ -49,8 +59,9 @@ const actions: ActionTree<PlayListState, RootState> = {
         commit("CLEAR_TIMER");
         // get the db
         const db = rootGetters["db/get"];
-        // set the current playlistId
+        // set the ids to empty
         db.set("history.lastPlaylistId", null).write();
+        db.set("history.lastWallpaperId", null).write();
     }
 };
 

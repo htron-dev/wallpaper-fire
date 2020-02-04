@@ -2,18 +2,14 @@ import { RootState } from "@/store";
 const { remote } = window.require("electron");
 
 const state: RootState = {
+    notifications: [],
     appPath: remote.app.getAppPath(),
     app: {
-        width: "",
-        heigth: ""
+        window: {}
     },
     history: {
         lastWallpaperId: null,
-        lastPlaylistId: null,
-    },
-    wallpapers: {
-        lastId: 0,
-        all: []
+        lastPlaylistId: null
     }
 };
 

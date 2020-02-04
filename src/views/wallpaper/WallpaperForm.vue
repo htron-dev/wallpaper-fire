@@ -62,6 +62,13 @@ const fs = window.require("fs");
 const path = window.require("path");
 
 export default createComponent({
+    props: {
+        editableItem: {
+            type: Object,
+            require: false,
+            default: null
+        }
+    },
     setup (props, { emit, root }) {
         const state = reactive({
             slide: 1,
@@ -81,7 +88,6 @@ export default createComponent({
         };
 
         watch(() => state.slide, (old, newSlide) => {
-            console.log(newSlide);
             if (video && video.duration && video.duration !== Infinity) {
                 video.currentTime = Math.ceil((newSlide / 100) * video.duration);
             }
@@ -108,7 +114,6 @@ export default createComponent({
             video.setAttribute("type", `video/${state.extname.replace(".", "")}`);
 
             video.addEventListener("timeupdate", () => {
-                console.log(video.currentTime);
                 if (video.duration === Infinity) {
                 }
             });
@@ -131,7 +136,7 @@ export default createComponent({
 
                 canvas.toBlob(blob => {
                     const reader = new FileReader();
-                    reader.readAsDataURL(blob)
+                    reader.readAsDataURL(blob);
                     reader.onloadend = () => {
                         const base64 = reader.result;
                         state.thumb = base64;
@@ -140,7 +145,17 @@ export default createComponent({
             });
         };
 
-        const submit = () => {
+        if (props.editableItem) {
+            state.path = props.editableItem.path;
+            state.title = props.editableItem.title;
+            state.title = props.editableItem.title;
+            state.description = props.editableItem.description;
+            state.description = props.editableItem.description;
+            state.thumb = `file://${props.editableItem.thumb}`;
+        }
+        console.log(state);
+
+        const submit = async () => {
             if (!form.value.validate()) {
                 return;
             }
@@ -153,7 +168,7 @@ export default createComponent({
                 thumb: state.thumb
             };
 
-            root.$store.dispatch("addWallpaper", wallpaper);
+            await root.$store.dispatch("wallpaper/create", wallpaper);
             close();
         };
 

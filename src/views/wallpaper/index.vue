@@ -14,9 +14,5 @@ export default {
     components: {
         WallpaperToobar: () => import("./WallpaperToobar.vue")
     }
-}
+};
 </script>
-
-<style>
-
-</style>

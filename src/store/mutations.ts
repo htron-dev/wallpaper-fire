@@ -3,9 +3,9 @@ import { MutationTree } from "vuex";
 
 const mutations: MutationTree<RootState> = {
 
-    SET_WALLPAPERS (state, wallpapers) {
-        state.wallpapers.all = wallpapers;
-    },
+    ADD_NOTIFICATION (state, notification) {
+        state.notifications.push(notification);
+    }
 
 };
 
