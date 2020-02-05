@@ -101,7 +101,7 @@ export default createComponent({
             const file = await dialog.showOpenDialog(options);
 
             if (file.canceld || file.filePaths.length === 0) {
-                alert("error");
+                root.$store.dispatch("showErrorNotification", "Canceled");
                 close();
                 return;
             }
@@ -110,6 +110,10 @@ export default createComponent({
 
             state.path = file.filePaths[0];
 
+            setVideoPreview();
+        };
+
+        const setVideoPreview = () => {
             video.setAttribute("src", `file://${state.path}`);
             video.setAttribute("type", `video/${state.extname.replace(".", "")}`);
 
@@ -152,8 +156,8 @@ export default createComponent({
             state.description = props.editableItem.description;
             state.description = props.editableItem.description;
             state.thumb = `file://${props.editableItem.thumb}`;
+            setVideoPreview();
         }
-        console.log(state);
 
         const submit = async () => {
             if (!form.value.validate()) {
@@ -168,7 +172,15 @@ export default createComponent({
                 thumb: state.thumb
             };
 
-            await root.$store.dispatch("wallpaper/create", wallpaper);
+            if (props.editableItem) {
+                await root.$store.dispatch("wallpaper/edit", {
+                    id: props.editableItem.id,
+                    wallpaper: wallpaper
+                });
+            } else {
+                await root.$store.dispatch("wallpaper/create", wallpaper);
+            }
+
             close();
         };
 

@@ -1,8 +1,8 @@
-import { ActionTree } from "vuex"
+import { ActionTree } from "vuex";
 import { RootState } from "@/store";
 import { DBState } from "./state";
-const low = window.require("lowdb")
-const FileSync = window.require("lowdb/adapters/FileSync")
+const low = window.require("lowdb");
+const FileSync = window.require("lowdb/adapters/FileSync");
 const actions: ActionTree<DBState, RootState> = {
     setDB ({ state, commit }) {
         const adapter = new FileSync(state.path);

@@ -5,10 +5,10 @@
                 v-for="wallpaper in wallpapers"
                 :key="wallpaper.id"
                 :disabled="disabled"
-                @click="$emit('select-wallpaper', wallpaper)"
+                @click="handleSelectItem(wallpaper)"
             >
 
-                <v-list-item-action v-if="showSelect && showActions">
+                <v-list-item-action v-if="showSelect">
                     <v-checkbox
                         v-model="state.model"
                         :value="wallpaper.id"
@@ -16,7 +16,10 @@
                 </v-list-item-action>
 
                 <v-list-item-avatar size="60px">
-                    <v-img v-if="wallpaper.thumb" :src="'file://' + wallpaper.thumb" />
+                    <v-img
+                        v-if="wallpaper.thumb"
+                        :src="'file://' + wallpaper.thumb"
+                    />
                     <v-icon v-else size="50px">mdi-image</v-icon>
                 </v-list-item-avatar>
 
@@ -44,11 +47,12 @@
 <script lang="ts">
 import { createComponent, computed, reactive } from "@vue/composition-api";
 import { Wallpaper } from "@/store/modules/wallpaper/state";
-
+const fs = window.require("fs");
 type Props = {
-    wallpapers: Wallpaper[],
-    value: number[],
-    loading: boolean,
+    wallpapers: Wallpaper[];
+    value: number[];
+    loading: boolean;
+    showSelect: boolean;
 }
 
 export default createComponent<Props>({
@@ -66,7 +70,7 @@ export default createComponent<Props>({
         loading: {
             type: Boolean,
             required: false,
-            default: () => []
+            default: false
         },
         iconDelete: {
             type: String,
@@ -86,17 +90,43 @@ export default createComponent<Props>({
     },
     setup (props, { emit }) {
         const state = reactive({
+            items: [],
             model: computed<number[]>({
-                get () {
+                get (): number[] {
                     return props.value;
                 },
-                set (value: number[]) {
+                set (value: number[]): void {
                     emit("input", value);
                 }
             })
         });
+        const handleSelectItem = (wallpaper: Wallpaper) => {
+            if (props.showSelect) {
+                const index = state.model.indexOf(wallpaper.id);
+                if (index !== -1) {
+                    state.model.splice(index, 1);
+                } else {
+                    state.model.push(wallpaper.id);
+                }
+            } else {
+                emit("select-wallpaper", wallpaper);
+            }
+        };
+
+        const thumbExists = async (path: string) => {
+            try {
+                await fs.promises.access(path);
+                return true;
+            } catch (error) {
+                console.log(error);
+                return false;
+            }
+        };
+
         return {
-            state
+            state,
+            handleSelectItem,
+            thumbExists
         };
     }
 });

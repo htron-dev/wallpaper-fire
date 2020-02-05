@@ -3,6 +3,7 @@ const { remote } = window.require("electron");
 
 const state: RootState = {
     notifications: [],
+    topbarMessages: [],
     appPath: remote.app.getAppPath(),
     app: {
         window: {}

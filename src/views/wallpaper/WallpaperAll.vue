@@ -38,11 +38,26 @@
                             </v-dialog>
                             <v-dialog v-model="state.alertDialog" v-if="state.alertDialog" max-width="1000">
                                 <v-card>
-                                    <v-card-text>Are you sure</v-card-text>
+                                    <v-card-text>
+                                        <div class="text-center">
+                                            <v-icon
+                                                class="d-block"
+                                                color='warning'
+                                                size="200"
+                                            >
+                                                mdi-alert
+                                            </v-icon>
+                                            <h2>{{$lodash.upperCase("Are you sure")}}</h2>
+                                        </div>
+                                    </v-card-text>
                                     <v-card-actions>
                                         <v-spacer />
-                                        <v-btn @click="deleteWallpaper">Yes delete</v-btn>
-                                        <v-btn @click="reset">Cancel</v-btn>
+                                        <v-btn
+                                            color="error"
+                                            @click="reset">No</v-btn>
+                                        <v-btn
+                                            color="success"
+                                            @click="deleteWallpaper">Yes</v-btn>
                                         <v-spacer />
                                     </v-card-actions>
                                 </v-card>
@@ -59,7 +74,7 @@
 
 import { createComponent, computed, reactive, watch } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
-import { Wallpaper } from '../../store/modules/wallpaper/state';
+import { Wallpaper } from "../../store/modules/wallpaper/state";
 
 type WallpaperState = {
     wallpaper: Wallpaper | null,
@@ -118,6 +133,7 @@ export default createComponent({
 
         const reset = () => {
             setWallpaperList();
+            state.wallpaper = null;
             state.editableItem = null;
             state.alertDialog = false;
             state.wallpaperDialog = false;

@@ -69,7 +69,7 @@
                                                     v-model="state.editedItem.config.delay"
                                                     return-miliseconds
                                                     prepend-icon="mdi-clock-outline"
-                                                    label="Interval" />                                        
+                                                    label="Interval" />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -109,6 +109,7 @@
                                         :show-actions="state.edit"
                                         icon-delete="mdi-close"
                                         :wallpapers="state.playlistWallpapers"
+                                        :disabled='!state.edit'
                                     />
                                 </v-col>
                             </v-row>

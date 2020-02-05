@@ -3,8 +3,7 @@ import { RootState } from "@/store";
 import { PlayList, PlayListState } from "./state";
 
 const actions: ActionTree<PlayListState, RootState> = {
-    async setPlaylist ({ state, rootGetters, dispatch, commit }, playlist: PlayList) {
-        console.log("start playlist");
+    async setPlaylist ({ rootGetters, dispatch, commit }, playlist: PlayList) {
         // just set the interval if is more that 5 minutes
         let IntervalTime = 300000;
         if (playlist.config.delay > IntervalTime) {

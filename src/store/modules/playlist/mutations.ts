@@ -1,4 +1,4 @@
-import { MutationTree } from "vuex"
+import { MutationTree } from "vuex";
 import { PlayListState } from "./state";
 
 const mutations: MutationTree<PlayListState> = {

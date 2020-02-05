@@ -1,22 +1,22 @@
 <template>
-  <v-list>
-      <v-list-item
-        @click="$emit('select-item', item)"
-        v-for="item in items"
-        :key="item">
-        <v-list-item-content>
-            {{item}}
-        </v-list-item-content>
-        <v-list-item-action>
-            <v-btn
-                @click.stop="$emit('delete-item', item)"
-                icon
-                color="error">
-                <v-icon>mdi-delete</v-icon>
-            </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-  </v-list>
+    <v-list>
+        <v-list-item
+            @click="$emit('select-item', item)"
+            v-for="item in items"
+            :key="item">
+            <v-list-item-content>
+                {{item}}
+            </v-list-item-content>
+            <v-list-item-action>
+                <v-btn
+                    @click.stop="$emit('delete-item', item)"
+                    icon
+                    color="error">
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </v-list-item-action>
+        </v-list-item>
+    </v-list>
 </template>
 
 <script lang="ts">

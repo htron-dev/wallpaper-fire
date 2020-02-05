@@ -1,6 +1,6 @@
 import { ActionTree } from "vuex";
 import { RootState } from "@/store";
-
+const fs = window.require("fs");
 const exec = window.require("child_process").exec;
 const getScript = (file: string) => {
     const plasmaScript = `dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
@@ -19,12 +19,30 @@ const getScript = (file: string) => {
 };
 
 const actions: ActionTree<{}, RootState> = {
-    async setWallpaperVideo ({ rootState, dispatch }, { videoPath }) {
-        const command = getScript(videoPath);
+    async setup ({ dispatch }) {
+        exec("echo $HOME", (error: any, stdout: any) => {
+            if (error !== null) {
+                dispatch("showErrorNotification", "[KDE MODULE] Error in setup", { root: true });
+            }
+            const pluginPath = `${stdout.replace("\n", "")}/.local/share/plasma/wallpapers/smartvideowallpaper/`;
+            fs.access(pluginPath, (err: any) => {
+                if (err) {
+                    console.log(err);
+                    dispatch("showErrorNotification", "[KDE MODULE] Missing required kde plugin: SmartVideoWallpaper", { root: true });
+                } else {
+                    dispatch("showSuccessNotification", "[KDE MODULE] Module loaded", { root: true });
+                }
+            });
+        });
+    },
+    async setWallpaperVideo ({ rootState, dispatch }, { path, wallpaper }) {
+        const command = getScript(path);
         try {
             const { stdout, stderr } = await exec(command);
+            console.log(wallpaper);
+            dispatch("showSuccessNotification", `[KDE MODULE] Set wallpaper ${wallpaper.title}`, { root: true });
         } catch (error) {
-            dispatch("showErrorNotification", "[KDE MODULE] error in set wallpaper");
+            dispatch("showErrorNotification", "[KDE MODULE] Error in set wallpaper");
         }
     }
 };

@@ -1,18 +1,16 @@
 import { RootState } from "@/store";
 import { ActionTree } from "vuex";
 import { Wallpaper } from "./modules/wallpaper/state";
-import state from "./modules/playlist/state";
 
 const actions: ActionTree<RootState, RootState> = {
 
-    setup ({ commit, rootGetters, dispatch }) {
+    setup ({ rootGetters, dispatch }) {
         const db = rootGetters["db/get"];
         const history = db.get("history").value();
         if (history.lastPlaylistId) {
             const playlist = rootGetters["playlist/findById"](history.lastPlaylistId);
             dispatch("playlist/setPlaylist", playlist);
-        }
-        if (history.lastWallpaperId) {
+        } else if (history.lastWallpaperId) {
             const wallpaper = rootGetters["wallpaper/findById"](history.lastWallpaperId);
             dispatch("setDescktopWallpaper", wallpaper);
         }
@@ -28,20 +26,22 @@ const actions: ActionTree<RootState, RootState> = {
         };
         dispatch("showNotification", notification);
     },
-
-    async setWallpapers ({ commit, rootGetters }) {
-        const db = rootGetters["db/get"];
-        const wallpapers = db.get("wallpapers.all").value();        
-        commit("SET_WALLPAPERS", wallpapers);
+    showSuccessNotification ({ dispatch }, message: string) {
+        const notification = {
+            color: "success",
+            show: true,
+            message
+        };
+        dispatch("showNotification", notification);
     },
     async setDescktopWallpaper ({ rootGetters, dispatch }, wallpaper: Wallpaper) {
-
         if (!wallpaper) {
             dispatch("showErrorNotification", "Invalid wallpaper");
         }
 
         const options = {
-            videoPath: wallpaper.path
+            path: wallpaper.path,
+            wallpaper: wallpaper
         };
 
         dispatch("kde/setWallpaperVideo", options, { root: true });
