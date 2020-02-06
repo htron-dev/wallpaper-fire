@@ -5,6 +5,9 @@ const mutations: MutationTree<RootState> = {
 
     ADD_NOTIFICATION (state, notification) {
         state.notifications.push(notification);
+    },
+    SET_USER_NOTIFICATIONS (state, notifications) {
+        state.user.notifications = notifications;
     }
 
 };

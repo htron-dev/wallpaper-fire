@@ -2,11 +2,14 @@ import { ActionTree } from "vuex";
 import { RootState } from "@/store";
 import { DBState } from "./state";
 const low = window.require("lowdb");
+const lodashId = window.require("lodash-id");
 const FileSync = window.require("lowdb/adapters/FileSync");
 const actions: ActionTree<DBState, RootState> = {
     setDB ({ state, commit }) {
         const adapter = new FileSync(state.path);
         const db = low(adapter);
+        db._.mixin(lodashId);
+
         const defaultBD = {
             appPath: "",
             app: {
@@ -14,6 +17,9 @@ const actions: ActionTree<DBState, RootState> = {
                     heigth: 900,
                     width: 600
                 }
+            },
+            user: {
+                notifications: []
             },
             history: {
                 lastWallpaperId: null,

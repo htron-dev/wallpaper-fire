@@ -40,8 +40,8 @@ export default createComponent({
 });
 </script>
 
-<style >
-    .v-toolbar__content {
+<style scoped>
+    /deep/ .v-toolbar__content {
         padding-left: 0;
     }
 </style>

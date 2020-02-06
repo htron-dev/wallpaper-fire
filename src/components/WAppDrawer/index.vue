@@ -1,5 +1,6 @@
 <template>
     <v-navigation-drawer
+        app
         permanent
         :mini-variant="state.mini"
         v-bind="$attrs">

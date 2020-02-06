@@ -1,6 +1,7 @@
 <template>
     <v-app>
-        <w-drawer app />
+        <w-app-drawer />
+        <w-app-bar />
         <v-content>
             <v-container fluid fill-height>
                 <v-row no-gutters>
@@ -40,9 +41,6 @@ import { createComponent, computed } from "@vue/composition-api";
 import { provideStore, useStore } from "@/store/use-store";
 
 export default createComponent({
-    components: {
-        WDrawer: () => import("@/components/WDrawer/index.vue")
-    },
     setup (props, { root }) {
         provideStore(root.$store);
         const store = useStore();

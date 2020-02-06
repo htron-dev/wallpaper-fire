@@ -20,6 +20,7 @@
     "core-js": "^3.4.3",
     "electron": "^7.1.7",
     "lodash": "^4.17.15",
+    "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "roboto-fontface": "*",
     "vue": "^2.6.10",
