@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive } from "@vue/composition-api";
+import { createComponent, computed, reactive, Ref } from "@vue/composition-api";
 import { Wallpaper } from "@/store/modules/wallpaper/state";
 const fs = window.require("fs");
 type Props = {
@@ -53,6 +53,11 @@ type Props = {
     value: number[];
     loading: boolean;
     showSelect: boolean;
+}
+
+type State = {
+
+    model: any
 }
 
 export default createComponent<Props>({
@@ -89,9 +94,8 @@ export default createComponent<Props>({
         }
     },
     setup (props, { emit }) {
-        const state = reactive({
-            items: [],
-            model: computed<number[]>({
+        const state = reactive<State>({
+            model: computed({
                 get (): number[] {
                     return props.value;
                 },
@@ -118,8 +122,7 @@ export default createComponent<Props>({
                 await fs.promises.access(path);
                 return true;
             } catch (error) {
-                console.log(error);
-                return false;
+                throw error;
             }
         };
 

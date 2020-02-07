@@ -6,8 +6,9 @@ const state: RootState = {
     user: {
         notifications: []
     },
-    appPath: remote.app.getAppPath(),
     app: {
+        appPath: remote.app.getAppPath(),
+        configPath: `${remote.app.getPath("userData")}/wallpaperFire/config.json`,
         window: {}
     },
     history: {

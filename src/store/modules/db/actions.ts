@@ -5,38 +5,10 @@ const low = window.require("lowdb");
 const lodashId = window.require("lodash-id");
 const FileSync = window.require("lowdb/adapters/FileSync");
 const actions: ActionTree<DBState, RootState> = {
-    setDB ({ state, commit }) {
-        const adapter = new FileSync(state.path);
+    init ({ state, commit, rootState }, configPath) {
+        const adapter = new FileSync(configPath);
         const db = low(adapter);
         db._.mixin(lodashId);
-
-        const defaultBD = {
-            appPath: "",
-            app: {
-                window: {
-                    heigth: 900,
-                    width: 600
-                }
-            },
-            user: {
-                notifications: []
-            },
-            history: {
-                lastWallpaperId: null,
-                lastPlaylistId: null
-            },
-            wallpapers: {
-                lastId: 1,
-                all: []
-            },
-            playlist: {
-                lastId: 1,
-                all: []
-            }
-        };
-
-        db.defaults(defaultBD).write();
-
         commit("SET_DB", db);
     }
 };

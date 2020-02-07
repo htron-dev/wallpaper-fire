@@ -1,10 +1,10 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
+const Database = require("./database");
 const fs = require("fs");
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
 
 app.on("ready", () => {
     let window = new BrowserWindow({
+        show: false,
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
@@ -12,18 +12,14 @@ app.on("ready", () => {
         }
     });
 
-    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire`)) {
-        fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire`);
-        fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire/thumbnails`);
-        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire/config.json`, "{}");
-    }
+    window.once("ready-to-show", () => {
+        Database.setup().then(() => window.show());
+    });
 
-    const adapter = new FileSync(`${app.getPath("userData")}/config.json`);
-    const db = low(adapter);
-    const appConfig = db.get("app").value();
-    if (appConfig && appConfig.window) {
-        window.setBounds(appConfig.window);
-    }
+    ipcMain.handle("setup-database", async (event) => {
+        const configPath = await Database.setup();
+        return configPath;
+    });
 
     if (process.env.NODE_ENV === "production") {
         window.loadFile("./dist/index.html");
@@ -36,8 +32,9 @@ app.on("ready", () => {
 
     // insert menu
     Menu.setApplicationMenu(mainMenu);
-    // resise options
+    // save resize options
     window.on("resize", () => {
+        const db = Database.connect();
         db.set("app.window", window.getBounds()).write();
     });
     window.on("close", () => {

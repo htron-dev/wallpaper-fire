@@ -1,7 +1,6 @@
 import { RootState } from "@/store";
 import { ActionTree } from "vuex";
 import { Wallpaper } from "./modules/wallpaper/state";
-
 const actions: ActionTree<RootState, RootState> = {
 
     setup ({ rootGetters, dispatch }) {

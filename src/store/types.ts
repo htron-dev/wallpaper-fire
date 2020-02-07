@@ -3,8 +3,9 @@ import { WallpaperState } from "@/store/modules/wallpaper/state";
 export type RootState = {
     [prop: string]: any,
     notifications: any[],
-    appPath: string,
     app: {
+        appPath: string,
+        configPath: string,
         window: any
     },
     history: {

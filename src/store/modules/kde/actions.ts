@@ -26,17 +26,17 @@ const actions: ActionTree<{}, RootState> = {
             }
             const pluginPath = `${stdout.replace("\n", "")}/.local/share/plasma/wallpapers/smartvideowallpaper/`;
             fs.access(pluginPath, (err: any) => {
-                const notification = {
-                    color: "error",
-                    message: "[KDE MODULE] Missing required kde plugin, SmartVideoWallpaper.\n Please download the plugin",
-                    icon: "mdi-alert",
-                    link: {
-                        text: "Plugin page",
-                        href: "https://store.kde.org/p/1316299/"
-                    }
-                };
-                dispatch("showImportantNotification", notification, { root: true });
                 if (err) {
+                    const notification = {
+                        color: "error",
+                        message: "[KDE MODULE] Missing required kde plugin, SmartVideoWallpaper.\n Please download the plugin",
+                        icon: "mdi-alert",
+                        link: {
+                            text: "Plugin page",
+                            href: "https://store.kde.org/p/1316299/"
+                        }
+                    };
+                    dispatch("showImportantNotification", notification, { root: true });
                 } else {
                     dispatch("showSuccessNotification", "[KDE MODULE] Module loaded", { root: true });
                 }
@@ -51,7 +51,8 @@ const actions: ActionTree<{}, RootState> = {
         } catch (error) {
             const notification = {
                 color: "error",
-                message: "[KDE MODULE] Error in set wallpaper"
+                message: "[KDE MODULE] Error in set wallpaper",
+                icon: "mdi-alert"
             };
             dispatch("showImportantNotification", notification, { root: true });
         }

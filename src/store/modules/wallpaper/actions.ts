@@ -4,6 +4,8 @@ import { WallpaperState, Wallpaper } from "./state";
 const { remote } = window.require("electron");
 const fs = window.require("fs");
 const path = window.require("path");
+const { promisify } = window.require("util");
+const writeFileAsync = promisify(fs.writeFile);
 
 const actions: ActionTree<WallpaperState, RootState> = {
     async create ({ rootGetters, dispatch }, wallpaper: Wallpaper) {
@@ -16,62 +18,38 @@ const actions: ActionTree<WallpaperState, RootState> = {
         }
 
         if (wallpaper.thumb && wallpaper.thumb !== "") {
-            const base64Data = wallpaper.thumb.replace(/^data:image\/png;base64,/, "");
-            const filePath = `${remote.app.getPath("userData")}/wallpaperFire/thumbnails/${Date.now()}-${wallpaper.title}`;
-            await fs.writeFile(filePath, base64Data, "base64", function (err: any) {
-                if (err) {
-                    dispatch("showErrorNotification", "[WALLPAPER MODULE] can't create thubnail", { root: true });
-                }
+            wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
+                base64: wallpaper.thumb, title: wallpaper.title
             });
-
-            wallpaper.thumb = filePath;
         }
         const db = rootGetters["db/get"];
-
-        const id = db.get("wallpapers.lastId").value();
-        wallpaper = {
-            ...wallpaper,
-            id
-        };
-        db.get("wallpapers.all").push(wallpaper).write();
-        db.set("wallpapers.lastId", id + 1).write();
+        db.get("wallpapers.all").insert(wallpaper).write();
     },
-    async edit ({ rootGetters, dispatch }, data: { id: number, wallpaper: Wallpaper}) {
-        if (!data.wallpaper.path) {
+    async edit ({ rootGetters, dispatch }, { id, wallpaper }: { id: number, wallpaper: Wallpaper}) {
+        if (!wallpaper.path) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid path", { root: true });
         }
 
-        if (!data.wallpaper.title) {
+        if (!wallpaper.title) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid title", { root: true });
         }
 
         // get old wallpaper
-        const oldWallpaper: Wallpaper = rootGetters["wallpaper/findById"](data.id);
+        const oldWallpaper: Wallpaper = rootGetters["wallpaper/findById"](id);
 
-        if (oldWallpaper.thumb && data.wallpaper.thumb) {
-            const base64Data = data.wallpaper.thumb.replace(/^data:image\/png;base64,/, "");
-            await fs.writeFile(oldWallpaper.thumb, base64Data, "base64", function (err: any) {
-                if (err) {
-                    dispatch("showErrorNotification", "[WALLPAPER MODULE] can't create thubnail", { root: true });
-                }
+        if (oldWallpaper.thumb && wallpaper.thumb) {
+            wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
+                base64: wallpaper.thumb, title: wallpaper.title
             });
-            data.wallpaper.thumb = oldWallpaper.thumb;
-        } else if (!oldWallpaper.thumb && data.wallpaper.thumb) {
-            const base64Data = data.wallpaper.thumb.replace(/^data:image\/png;base64,/, "");
-            const filePath = `${remote.app.getPath("userData")}/wallpaperFire/thumbnails/${Date.now()}-${data.wallpaper.title}`;
-            await fs.writeFile(filePath, base64Data, "base64", function (err: any) {
-                if (err) {
-                    dispatch("showErrorNotification", "[WALLPAPER MODULE] can't create thubnail", { root: true });
-                }
+        } else if (!oldWallpaper.thumb && wallpaper.thumb) {
+            wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
+                base64: wallpaper.thumb, title: wallpaper.title
             });
-
-            data.wallpaper.thumb = filePath;
         }
         const db = rootGetters["db/get"];
 
         db.get("wallpapers.all")
-            .find({ id: data.id })
-            .assign(data.wallpaper)
+            .updateById(id, wallpaper)
             .write();
 
         dispatch("showSuccessNotification", "Wallpaper updated", { root: true });
@@ -91,6 +69,17 @@ const actions: ActionTree<WallpaperState, RootState> = {
 
         db.get("wallpapers.all").remove({ id }).write();
         dispatch("showSuccessNotification", "Wallpaper deleted", { root: true });
+    },
+    async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, title }: { base64: string, title: string }) {
+        try {
+            let base64Data = base64.replace(/^data:image\/png;base64,/, "");
+            const filePath = `${remote.app.getPath("userData")}/wallpaperFire/thumbnails/${Date.now()}-${title}`;
+            await writeFileAsync(filePath, base64Data, "base64");
+            return filePath;
+        } catch (error) {
+            dispatch("showErrorNotification", "[WALLPAPER MODULE] Error creating thumb", { root: true });
+            return null;
+        }
     },
     async deleteWallpaperThumbnail ({ rootGetters, dispatch }, path: string) {
         fs.unlink(path, (err: any) => {
