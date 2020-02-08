@@ -1,5 +1,5 @@
 <template>
-    <v-row v-if="wallpaper">
+    <v-row v-if="wallpaper" no-gutters>
         <v-col cols="12">
             <video
                 id="wallpaper-preview-video"
@@ -7,8 +7,11 @@
                 :src="'file://' + wallpaper.path"
                 max-width="100%" max-height="100%" />
         </v-col>
-        <v-col cols="12">
-            <h1 class="title">{{ wallpaper.title }}</h1>
+        <v-col
+            cols="12"
+            class="my-3"
+        >
+            <h1 class="title">{{ $lodash.capitalize(wallpaper.title) }}</h1>
             <h2
                 v-if="wallpaper.description"
                 class="subtitle-1"
@@ -18,13 +21,31 @@
         </v-col>
         <v-col>
             <v-btn
+                class="mr-4"
                 @click="setWallpaper"
-                large color="success">Set as wallpaper</v-btn>
+                color="success">Use wallpaper</v-btn>
+            <v-btn
+                class="mr-4"
+                @click="$emit('edit-wallpaper', wallpaper)"
+                color="info">
+                Edit
+            </v-btn>
+            <v-btn
+                @click="$emit('delete-wallpaper', wallpaper)"
+                color="error">
+                Delete
+            </v-btn>
         </v-col>
     </v-row>
-    <v-row v-else>
-        <v-col>
-            Choose a video
+    <v-row v-else no-gutters>
+        <v-col cols="12">
+            <v-icon
+                id="wallpaper-preview-video"
+                class="grey"
+                size='150'
+            >
+                mdi-youtube
+            </v-icon>
         </v-col>
     </v-row>
 </template>
@@ -46,7 +67,7 @@ export default createComponent({
 
         const setWallpaper = () => {
             store.dispatch("setDescktopWallpaper", props.wallpaper);
-        }
+        };
 
         return {
             setWallpaper
@@ -58,6 +79,6 @@ export default createComponent({
 <style>
     #wallpaper-preview-video{
         width: 100%;
-        height: 670px;
+        min-height: 400px;
     }
 </style>

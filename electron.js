@@ -1,8 +1,10 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
+const Database = require("./database");
 const fs = require("fs");
 
 app.on("ready", () => {
     let window = new BrowserWindow({
+        show: false,
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
@@ -10,22 +12,26 @@ app.on("ready", () => {
         }
     });
 
-    window.setBounds({
-        x: 0,
-        y: 0,
-        width: 900,
-        height: 600
+    window.once("ready-to-show", () => {
+        Database.setup().then(() => {
+            window.show();
+        });
     });
 
-    if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire.json`)) {
-        fs.writeFileSync(`${app.getPath("userData")}/wallpaperFire.json`, "{}");
-    }
+    ipcMain.handle("setup-database", async (event) => {
+        const configPath = await Database.setup();
+        return configPath;
+    });
+    ipcMain.on("set-window-bounds", () => {
+        const db = Database.connect();
+        const bounds = db.get("app.window").value();
+        window.setBounds(bounds);
+    });
 
     if (process.env.NODE_ENV === "production") {
         window.loadFile("./dist/index.html");
     } else {
         window.loadURL("http://localhost:8080");
-        window.webContents.openDevTools();
     }
 
     // build menu
@@ -33,7 +39,11 @@ app.on("ready", () => {
 
     // insert menu
     Menu.setApplicationMenu(mainMenu);
-
+    // save resize options
+    window.on("resize", () => {
+        const db = Database.connect();
+        db.set("app.window", window.getBounds()).write();
+    });
     window.on("close", () => {
         window = null;
     });

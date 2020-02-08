@@ -2,18 +2,18 @@ import { RootState } from "@/store";
 const { remote } = window.require("electron");
 
 const state: RootState = {
-    appPath: remote.app.getAppPath(),
+    notifications: [],
+    user: {
+        notifications: []
+    },
     app: {
-        width: "",
-        heigth: ""
+        appPath: remote.app.getAppPath(),
+        configPath: `${remote.app.getPath("userData")}/wallpaperFire/config.json`,
+        window: {}
     },
     history: {
         lastWallpaperId: null,
-        lastPlaylistId: null,
-    },
-    wallpapers: {
-        lastId: 0,
-        all: []
+        lastPlaylistId: null
     }
 };
 

@@ -1,66 +1,88 @@
 import { RootState } from "@/store";
 import { ActionTree } from "vuex";
-const { remote } = window.require("electron");
-const fs = window.require("fs");
-const path = window.require("path");
-
+import { Wallpaper } from "./modules/wallpaper/state";
 const actions: ActionTree<RootState, RootState> = {
-    
-    async setWallpapers ({ commit, rootGetters }) {
+
+    setup ({ rootGetters, dispatch }) {
         const db = rootGetters["db/get"];
-        const wallpapers = db.get("wallpapers.all").value();        
-        commit("SET_WALLPAPERS", wallpapers);
+        const history = db.get("history").value();
+        if (history.lastPlaylistId) {
+            const playlist = rootGetters["playlist/findById"](history.lastPlaylistId);
+            dispatch("playlist/setPlaylist", playlist);
+        } else if (history.lastWallpaperId) {
+            const wallpaper = rootGetters["wallpaper/findById"](history.lastWallpaperId);
+            dispatch("setDescktopWallpaper", wallpaper);
+        }
     },
-    async setDescktopWallpaper ({ rootGetters, dispatch }, wallpaper: any) {
-        
-        if(!wallpaper){
-            throw new Error("Invalid wallpaper");
+    showNotification ({ commit }, notification: any) {
+        notification = { ...notification, show: true };
+        commit("ADD_NOTIFICATION", notification);
+    },
+    showErrorNotification ({ dispatch }, message: string) {
+        const notification = {
+            color: "error",
+            message
+        };
+        dispatch("showNotification", notification);
+    },
+    showSuccessNotification ({ dispatch }, message: string) {
+        const notification = {
+            color: "success",
+            message
+        };
+        dispatch("showNotification", notification);
+    },
+    setUserNotifications ({ dispatch, rootGetters, commit }) {
+        const db = rootGetters["db/get"];
+        const userNotifications = db
+            .get("user.notifications")
+            .orderBy("timestamp", "desc")
+            .value();
+
+        commit("SET_USER_NOTIFICATIONS", userNotifications);
+    },
+    showImportantNotification ({ dispatch, rootGetters }, notification: any) {
+        notification = {
+            ...notification,
+            readed: false,
+            timestamp: Date.now()
+        };
+        const db = rootGetters["db/get"];
+
+        db.get("user.notifications").insert(notification).write();
+
+        dispatch("showNotification", notification);
+
+        dispatch("setUserNotifications");
+    },
+    removeNotification ({ dispatch, rootGetters }, id: any) {
+        const db = rootGetters["db/get"];
+
+        db.get("user.notifications").removeById(id).write();
+
+        dispatch("setUserNotifications");
+    },
+    clearAllNotification ({ dispatch, rootGetters }, id: any) {
+        const db = rootGetters["db/get"];
+
+        db.set("user.notifications", []).write();
+
+        dispatch("setUserNotifications");
+    },
+    async setDescktopWallpaper ({ rootGetters, dispatch }, wallpaper: Wallpaper) {
+        if (!wallpaper) {
+            dispatch("showErrorNotification", "Invalid wallpaper");
         }
 
         const options = {
-            videoPath: wallpaper.path,
+            path: wallpaper.path,
+            wallpaper: wallpaper
         };
 
         dispatch("kde/setWallpaperVideo", options, { root: true });
 
         const db = rootGetters["db/get"];
         db.set("history.lastWallpaperId", wallpaper.id).write();
-    },
-    async addWallpaper ({ rootGetters, dispatch }, wallpaper) {        
-        if (!wallpaper.path) {
-            throw new Error("Invalid path");
-        }
-
-        if (!wallpaper.title) {
-            throw new Error("Invalid title");
-        } 
-        
-        const db = rootGetters["db/get"];
-
-        const id = db.get("wallpapers.lastId").value();
-        wallpaper = {
-            ...wallpaper,
-            id
-        }
-    
-        db.get('wallpapers.all').push(wallpaper).write();
-        db.set("wallpapers.lastId", id + 1).write();
-
-        dispatch("setWallpapers");
-    },
-    async deleteWallpaper ({ rootGetters, dispatch }, id: number) {
-        console.log(id);
-        if (!id) {
-            throw new Error("Invalid id");
-        }
-        const db = rootGetters["db/get"];
-
-        console.log(id)
-
-        db.get("wallpapers.all").remove({id}).write();
-        
-        dispatch("setWallpapers");
-
     }
 };
 

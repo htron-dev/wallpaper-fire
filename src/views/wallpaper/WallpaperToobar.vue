@@ -1,6 +1,6 @@
 <template>
-    <v-toolbar class='pl-0' height="80px">
-        <v-toolbar-items>
+    <v-toolbar height="80px">
+        <v-toolbar-items >
             <v-btn
                 v-for="item in items"
                 :key='item.text'
@@ -35,11 +35,13 @@ export default createComponent({
         ];
         return {
             items
-        }
+        };
     }
 });
 </script>
 
-<style>
-
+<style scoped>
+    /deep/ .v-toolbar__content {
+        padding-left: 0;
+    }
 </style>

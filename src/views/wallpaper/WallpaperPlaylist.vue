@@ -2,115 +2,118 @@
     <v-row class="fill-height">
         <v-col cols="12">
             <v-card height="100%">
+                <v-card-title>
+                    <v-btn
+                        color="info"
+                        class="mr-5"
+                        @click="state.playlistDialog = true"
+                    >
+                        Create Playlist
+                    </v-btn>
+                </v-card-title>
                 <v-card-text>
                     <v-row style="min-height: 80vh;">
-                        <v-col cols="12" md='5'>
+                        <v-col cols="12" lg='6'>
                             <v-list>
                                 <v-list-item
                                     @click="showPlaylist(playlist)"
                                     :key="playlist.id"
                                     v-for="playlist in state.playlists">
-                                    <v-list-item-avatar>
-                                        <v-img v-if="playlist.thumb" :src="playlist.thumb" />
-                                        <v-icon v-else size="50px">mdi-image</v-icon>
+                                    <v-list-item-avatar :tile="!playlist.thumb">
+                                        <v-img v-if="playlist.thumb" :src="'file://' + playlist.thumb" />
+                                        <v-icon v-else large>mdi-image-multiple</v-icon>
                                     </v-list-item-avatar>
                                     <v-list-item-content>
                                         <v-list-item-title v-text="playlist.title" />
                                         <v-list-item-subtitle v-text="playlist.description" />
-                                    </v-list-item-content>
-                                    <v-list-item-content>
-                                        Wallpapers: {{ playlist.wallpapersIds.length }}
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
                         </v-col>
                         <v-divider vertical></v-divider>
                         <v-col>
-                            <div class="text-right">
-                                <v-btn class="mr-4" color="error">Discart changes</v-btn>
-                                <v-btn color="success">Save Playlist</v-btn>
-                            </div>
-                            <w-time-picker
-                                v-model="state.editedItem.config.delay"
-                                :items="times"
-                                prepend-icon="mdi-clock-outline"
-                                label="Delay of changes" />
-
-                            <v-list>
-                                {{ state.selected }}
-                            </v-list>
+                            <wallpaper-playlist-view
+                                v-if="state.selected"
+                                :playlistId="state.selected.id"
+                                @update="editPlaylist"
+                                @close="reset"
+                            />
                         </v-col>
                     </v-row>
                 </v-card-text>
             </v-card>
+            <v-dialog
+                v-model="state.playlistDialog"
+                max-width="1200"
+            >
+                <wallpaper-playlist-form
+                    :edited-item-id='state.editedItemId'
+                    @close="reset"
+                />
+            </v-dialog>
         </v-col>
     </v-row>
 </template>
 
 <script lang="ts">
-import { createComponent, reactive } from "@vue/composition-api";
+import { createComponent, reactive, watch } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
 import { PlayList } from "@/store/modules/playlist/state";
-type WallpaperPlaylistState = {
-    playlists: null | PlayList[],
-    selected: null | PlayList,
-    editedItem: any
-}
+import { Wallpaper } from "../../store/modules/wallpaper/state";
+
+type State = {
+    selected: null | any;
+    [prop: string]: any;
+};
+
 export default createComponent({
+    components: {
+        WallpaperPlaylistForm: () => import("./WallpaperPlaylistForm.vue"),
+        WallpaperPlaylistView: () => import("./WallpaperPlaylistView.vue")
+    },
     setup () {
-        const state = reactive<WallpaperPlaylistState>({
+        const store = useStore();
+        const state = reactive<State>({
+            edit: false,
+            playlistDialog: false,
             playlists: [],
             selected: null,
-            editedItem: {
-                config: {
-                    delay: "00:00"
-                }
+            editedItemId: null
+        });
+
+        watch(() => state.playlistDialog, (value) => {
+            if (!value) {
+                state.editedItemId = null;
             }
         });
-        const store = useStore();
-        const setPlalists = () => {
-            state.playlists = [
-                {
-                    id: 1,
-                    title: "Titulo",
-                    description: "description",
-                    thumb: null,
-                    wallpapersIds: [1],
-                    config: {
-                        delay: 5000
-                    }
-                }
-            ];
-            // state.plalists = store.getters["playlist/getAll"];
+
+        const load = () => {
+            state.playlists = store.getters["playlist/getAll"];
         };
 
-        const showPlaylist = (plalist: PlayList) => {
+        const showPlaylist = (item: PlayList) => {
+            const plalist = JSON.parse(JSON.stringify(item));
             state.selected = plalist;
         };
 
-        const times = [
-            "00:05",
-            "00:10",
-            "00:15",
-            "00:20",
-            "00:25",
-            "00:30",
-            "01:00",
-            "01:30",
-            "02:00",
-            "1 day",
-            "2 days",
-            "3 days",
-            "5 days",
-            "10 days"
+        const reset = () => {
+            state.selected = null;
+            state.playlistDialog = false;
+            state.playlists = [];
+            load();
+        };
 
-        ];
+        const editPlaylist = () => {
+            state.editedItemId = state.selected.id;
+            state.playlistDialog = true;
+        };
 
-        setPlalists();
+        load();
         return {
             state,
-            times,
-            showPlaylist
+            showPlaylist,
+            editPlaylist,
+            reset
         };
     }
 });

@@ -23,15 +23,15 @@ const routes = [
             {
                 path: "all",
                 name: "wallpaper-all",
-                component: () => import("./../views/wallpaper/WallpaperAll.vue"),
+                component: () => import("./../views/wallpaper/WallpaperAll.vue")
             },
             {
                 path: "playlist",
                 name: "wallpaper-playlist",
-                component: () => import("./../views/wallpaper/WallpaperPlaylist.vue"),
-            },
+                component: () => import("./../views/wallpaper/WallpaperPlaylist.vue")
+            }
 
-        ],
+        ]
     }
 ];
 
