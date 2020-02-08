@@ -1,5 +1,5 @@
 import { RootState } from "@/store";
-const { remote } = window.require("electron");
+const { remote, shell } = window.require("electron");
 
 const state: RootState = {
     notifications: [],
@@ -8,12 +8,27 @@ const state: RootState = {
     },
     app: {
         appPath: remote.app.getAppPath(),
-        configPath: `${remote.app.getPath("userData")}/wallpaperFire/config.json`,
+        dataPath: remote.app.getPath("userData"),
+        thumbsPath: `${remote.app.getPath("userData")}/thumbnails`,
         window: {}
     },
     history: {
         lastWallpaperId: null,
         lastPlaylistId: null
+    },
+    openExternalLink: (link: string) => {
+        if (!link) {
+            return undefined;
+        }
+
+        shell.openExternal(link);
+    },
+    openItem: (path: string) => {
+        if (!path) {
+            return undefined;
+        }
+
+        shell.openItem(path);
     }
 };
 

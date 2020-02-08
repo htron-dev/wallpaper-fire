@@ -1,6 +1,7 @@
 import { ActionTree } from "vuex";
 import { RootState } from "@/store";
 const fs = window.require("fs");
+const app = window.require("electron").remote.app;
 const exec = window.require("child_process").exec;
 const getScript = (file: string) => {
     const plasmaScript = `dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
@@ -20,28 +21,35 @@ const getScript = (file: string) => {
 
 const actions: ActionTree<{}, RootState> = {
     async setup ({ dispatch }) {
-        exec("echo $HOME", (error: any, stdout: any) => {
-            if (error !== null) {
-                dispatch("showErrorNotification", "[KDE MODULE] Error in setup", { root: true });
+        const pluginPath = `${app.getPath("home")}/.local/share/plasma/wallpapers/smartvideowallpaper`;
+        fs.access(pluginPath, (err: any) => {
+            if (err) {
+                const notification = {
+                    color: "error",
+                    message: "[KDE MODULE] Missing required kde plugin, SmartVideoWallpaper.\n Please download the plugin",
+                    icon: "mdi-alert",
+                    link: {
+                        text: "Plugin page",
+                        href: "https://store.kde.org/p/1316299/"
+                    }
+                };
+                dispatch("showImportantNotification", notification, { root: true });
+            } else {
+                dispatch("showSuccessNotification", "[KDE MODULE] Module loaded", { root: true });
             }
-            const pluginPath = `${stdout.replace("\n", "")}/.local/share/plasma/wallpapers/smartvideowallpaper/`;
-            fs.access(pluginPath, (err: any) => {
-                if (err) {
-                    const notification = {
-                        color: "error",
-                        message: "[KDE MODULE] Missing required kde plugin, SmartVideoWallpaper.\n Please download the plugin",
-                        icon: "mdi-alert",
-                        link: {
-                            text: "Plugin page",
-                            href: "https://store.kde.org/p/1316299/"
-                        }
-                    };
-                    dispatch("showImportantNotification", notification, { root: true });
-                } else {
-                    dispatch("showSuccessNotification", "[KDE MODULE] Module loaded", { root: true });
-                }
-            });
         });
+    },
+    async getInformations () {
+        const informations = {
+            name: "KDE Module",
+            dependences: [
+                {
+                    name: "Plugin SmartWallpaper",
+                    href: "https://store.kde.org/p/1316299/"
+                }
+            ]
+        };
+        return informations;
     },
     async setWallpaperVideo ({ rootState, dispatch }, { path, wallpaper }) {
         const command = getScript(path);

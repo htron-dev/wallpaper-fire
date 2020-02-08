@@ -8,7 +8,7 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const lodashId = require("lodash-id");
 //
-const configPath = `${app.getPath("userData")}/wallpaperFire/config.json`;
+const configPath = `${app.getPath("userData")}/config.json`;
 function connect () {
     const adapter = new FileSync(configPath);
     const db = low(adapter);
@@ -18,9 +18,8 @@ function connect () {
 
 async function setup () {
     try {
-        if (!fs.existsSync(`${app.getPath("userData")}/wallpaperFire`)) {
-            fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire`);
-            fs.mkdirSync(`${app.getPath("userData")}/wallpaperFire/thumbnails`);
+        if (!fs.existsSync(`${app.getPath("userData")}/thumbnails`)) {
+            fs.mkdirSync(`${app.getPath("userData")}/thumbnails`);
             const defaultBD = {
                 appPath: "",
                 app: {

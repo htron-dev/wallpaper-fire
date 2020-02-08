@@ -108,7 +108,6 @@
 <script lang="ts">
 import { createComponent, computed, reactive } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
-const { shell } = window.require("electron");
 
 export default createComponent({
     setup () {
@@ -120,13 +119,7 @@ export default createComponent({
         const unreadNotificationsLength = computed(() => {
             return notifications.value.filter(n => !n.readed).length;
         });
-        const openExternalLink = (link: string) => {
-            if (!link) {
-                return undefined;
-            }
-
-            shell.openExternal(link);
-        };
+        const openExternalLink = store.state.openExternalLink;
         const removeNotification = (notification: any) => {
             state.menu = false;
             store.dispatch("removeNotification", notification.id);

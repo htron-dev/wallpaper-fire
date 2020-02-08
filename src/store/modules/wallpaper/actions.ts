@@ -79,7 +79,7 @@ const actions: ActionTree<WallpaperState, RootState> = {
     async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, title }: { base64: string, title: string }) {
         try {
             let base64Data = base64.replace(/^data:image\/png;base64,/, "");
-            const filePath = `${remote.app.getPath("userData")}/wallpaperFire/thumbnails/${Date.now()}-${title}`;
+            const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${title}`;
             await writeFileAsync(filePath, base64Data, "base64");
             return filePath;
         } catch (error) {
