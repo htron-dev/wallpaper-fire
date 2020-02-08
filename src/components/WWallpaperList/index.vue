@@ -10,6 +10,7 @@
 
                 <v-list-item-action v-if="showSelect">
                     <v-checkbox
+                        @click.stop="handleSelectItem(wallpaper)"
                         v-model="state.model"
                         :value="wallpaper.id"
                     />
@@ -117,19 +118,9 @@ export default createComponent<Props>({
             }
         };
 
-        const thumbExists = async (path: string) => {
-            try {
-                await fs.promises.access(path);
-                return true;
-            } catch (error) {
-                throw error;
-            }
-        };
-
         return {
             state,
-            handleSelectItem,
-            thumbExists
+            handleSelectItem
         };
     }
 });

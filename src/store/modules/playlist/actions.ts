@@ -3,6 +3,18 @@ import { RootState } from "@/store";
 import { PlayList, PlayListState } from "./state";
 
 const actions: ActionTree<PlayListState, RootState> = {
+    async update ({ commit, rootGetters }, { id, playlist }) {
+        // get the db
+        const db = rootGetters["db/get"];
+        // update the playlist
+        db.get("playlist.all").updateById(id, playlist).write();
+    },
+    async delete ({ commit, rootGetters }, id) {
+        // get the db
+        const db = rootGetters["db/get"];
+        // delete the playlist
+        db.get("playlist.all").removeById(id).write();
+    },
     async setPlaylist ({ rootGetters, dispatch, commit }, playlist: PlayList) {
         // just set the interval if is more that 5 minutes
         let IntervalTime = 300000;

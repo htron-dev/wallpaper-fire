@@ -1,7 +1,7 @@
 <template>
     <v-form
         ref="form"
-        @submit.prevent="createPlaylist">
+        @submit.prevent="submit">
         <v-card>
             <v-card-title class="blue white--text font-weight-bold">
                 <h2 class="title">Add a new playlist</h2>
@@ -11,30 +11,30 @@
                     <v-col cols="12">
                         <v-text-field
                             label="Title"
-                            :rules="[rules.required]"
-                            v-model="playlist.title" />
+                            :rules="[state.rules.required]"
+                            v-model="state.playlist.title" />
                     </v-col>
                     <v-col cols="12">
                         <v-text-field
                             label="Description"
-                            v-model="playlist.description" />
+                            v-model="state.playlist.description" />
                     </v-col>
                     <v-col cols="12">
                         <w-time-picker
-                            v-model="playlist.config.delay"
+                            v-model="state.playlist.config.delay"
                             return-miliseconds
-                            :rules="[rules.required]"
+                            :rules="[state.rules.required]"
                             label="Wallpapers Interval" />
                     </v-col>
                     <v-col cols="12">
                         <v-autocomplete
                             label="Wallpapers"
-                            :items="wallpapers"
+                            :items="state.wallpapers"
                             item-text="title"
                             item-value="id"
                             chips
-                            :rules="[rules.required, rules.selectOne]"
-                            v-model="playlist.wallpaperIds"
+                            :rules="[state.rules.required, state.rules.selectOne]"
+                            v-model="state.playlist.wallpaperIds"
                             multiple
                             hide-selected
                         >
@@ -102,59 +102,86 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, ref } from "@vue/composition-api";
+import { createComponent, reactive, ref, computed } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
-import { PlayList } from "../../store/modules/playlist/state";
-
-export default createComponent({
+import state, { PlayList } from "../../store/modules/playlist/state";
+type Props = {
+    editedItem: PlayList
+};
+export default createComponent<Props>({
+    props: {
+        editedItem: {
+            type: Object,
+            required: false,
+            default: null
+        }
+    },
     setup (props, { emit }) {
         // get store
         const store = useStore();
 
-        // v-model
-        const playlist = reactive({
-            wallpaperIds: [],
-            config: {
-                delay: null
+        const state = reactive<any>({
+            playlist: {
+                wallpaperIds: [],
+                config: {
+                    delay: null
+                }
+            },
+            wallpapers: [],
+            labels: computed(() => {
+                const labels = {};
+                return labels;
+            }),
+            rules: {
+                required: (v: any) => !!v || "Required field",
+                selectOne: (value: any[]) => {
+                    let valid = true;
+                    if (value && value.length === 0) {
+                        valid = false;
+                    }
+                    return valid || "Choose at least one";
+                }
             }
         });
         // ref form
         const form = ref<any>(null);
-
-        // rules
-        const rules = {
-            required: (v: any) => !!v || "Required field",
-            selectOne: (value: any[]) => {
-                let valid = true;
-                if (value && value.length === 0) {
-                    valid = false;
-                }
-                return valid || "Choose at least one";
+        const load = () => {
+            if (props.editedItem) {
+                state.playlist = props.editedItem;
             }
+            // get the list of all wallpaperss
+            state.wallpapers = store.getters["wallpaper/getAll"];
         };
 
-        // get the list of all wallpaperss
-        const wallpapers = store.getters["wallpaper/getAll"];
-
         // function to create a playes
-        const createPlaylist = () => {
+        const submit = async () => {
             if (!form.value.validate()) {
                 return;
             }
-            store.getters["playlist/create"](playlist);
+
+            if (props.editedItem) {
+                const data = {
+                    id: props.editedItem.id,
+                    playlist: state.playlist
+                };
+
+                store.dispatch("playlist/update", data);
+            } else {
+                store.dispatch("playlist/create", state.playlist);
+            }
             emit("close");
         };
         const removeItem = (item: Partial<PlayList>) => {
-            const index = wallpapers.indexOf(item);
-            playlist.wallpaperIds.splice(index, 1);
+            const index = state.wallpapers.indexOf(item);
+            state.playlist.wallpaperIds.splice(index, 1);
         };
+
+        load();
         return {
-            playlist,
-            wallpapers,
-            rules,
+            state,
             form,
             removeItem,
-            createPlaylist
+            submit
         };
     }
 });
