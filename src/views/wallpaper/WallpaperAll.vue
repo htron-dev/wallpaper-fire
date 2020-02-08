@@ -36,18 +36,20 @@
                                     :editable-item="state.editableItem"
                                     @close="reset" />
                             </v-dialog>
-                            <v-dialog v-model="state.alertDialog" v-if="state.alertDialog" max-width="1000">
+                            <v-dialog
+                                v-model="state.alertDialog"
+                                v-if="state.alertDialog"
+                                max-width="500">
                                 <v-card>
                                     <v-card-text>
                                         <div class="text-center">
                                             <v-icon
-                                                class="d-block"
                                                 color='warning'
                                                 size="200"
                                             >
                                                 mdi-alert
                                             </v-icon>
-                                            <h2>{{$lodash.upperCase("Are you sure")}}</h2>
+                                            <h3>{{$lodash.upperCase("Are you sure")}}</h3>
                                         </div>
                                     </v-card-text>
                                     <v-card-actions>

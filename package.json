@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "npm run serve & npm run electron",
-    "electron": "electron . ",
+    "electron": "NODE_ENV=production electron . ",
+    "electron:dev": "NODE_ENV=development electron . ",
     "build": "vue-cli-service build",
     "build:dev": "vue-cli-service build --mode=development",
     "test:unit": "vue-cli-service test:unit",

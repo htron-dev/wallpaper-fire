@@ -16,7 +16,10 @@
                     />
                 </v-list-item-action>
 
-                <v-list-item-avatar size="60px">
+                <v-list-item-avatar
+                    size="60px"
+                    :class="[showSelect ? 'mr-4' : '']"
+                >
                     <v-img
                         v-if="wallpaper.thumb"
                         :src="'file://' + wallpaper.thumb"

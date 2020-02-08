@@ -4,23 +4,7 @@
         <w-app-bar />
         <v-content>
             <v-container fluid fill-height>
-                <v-row no-gutters>
-                    <v-col
-                        v-for="(alert, index) in alerts"
-                        :key="index"
-                        cols="12"
-                    >
-                        <v-alert
-                            class="ma-0"
-                            :value="true" color="red">
-                            teste
-                        </v-alert>
-                    </v-col>
-                    <v-col cols="12">
-                        <router-view v-if="state.ready" />
-                    </v-col>
-
-                </v-row>
+                <router-view v-if="state.ready" />
             </v-container>
         </v-content>
         <v-snackbar
@@ -52,6 +36,8 @@ export default createComponent({
         const load = async () => {
             const configPath = await ipcRenderer.invoke("setup-database");
             await store.dispatch("db/init", configPath);
+            ipcRenderer.send("set-window-bounds");
+            const db = store.getters[""];
             const { _actions } = store as any;
             // loop in all actions and execute all actions that match setup
             for (let action in _actions) {

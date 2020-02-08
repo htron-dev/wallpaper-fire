@@ -18,11 +18,6 @@ const getters: GetterTree<PlayListState, RootState> = {
         // // return the list of playlist filered
         return playlist;
     },
-    create: (state, getters, rootState, rootGetters) => (playlist: PlayList) => {
-        const db = rootGetters["db/get"];
-        db.get("playlist.all").insert(playlist).write();
-        return playlist;
-    },
     update: (state, getters, rootState, rootGetters) => (id: number, playlist: PlayList) => {
         const db = rootGetters["db/get"];
         db.get("playlist.all").updateById(id, playlist).write();

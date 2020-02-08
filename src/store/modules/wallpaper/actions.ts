@@ -1,6 +1,7 @@
 import { ActionTree } from "vuex";
 import { RootState } from "@/store";
 import { WallpaperState, Wallpaper } from "./state";
+import { PlayList } from "../playlist/state";
 const { remote } = window.require("electron");
 const fs = window.require("fs");
 const path = window.require("path");
@@ -54,11 +55,16 @@ const actions: ActionTree<WallpaperState, RootState> = {
 
         dispatch("showSuccessNotification", "Wallpaper updated", { root: true });
     },
-    async delete ({ rootGetters, dispatch }, id: number) {
-        if (!id) {
-            dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid id", { root: true });
-        }
+    async delete ({ rootGetters, dispatch }, id: string) {
         const db = rootGetters["db/get"];
+        const playlists: PlayList[] = rootGetters["playlist/getAll"];
+        playlists.forEach(p => {
+            if (p.wallpaperIds.includes(id)) {
+                p.wallpaperIds.splice(p.wallpaperIds.indexOf(id), 1);
+                db.get("playlist.all").updateById(p.id, p);
+            }
+        });
+        db.write();
         const wallpaper: Wallpaper = rootGetters["wallpaper/findById"](id);
         if (!wallpaper) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] can't find wallpaper", { root: true });
@@ -67,7 +73,7 @@ const actions: ActionTree<WallpaperState, RootState> = {
             await dispatch("deleteWallpaperThumbnail", wallpaper.thumb);
         }
 
-        db.get("wallpapers.all").remove({ id }).write();
+        db.get("wallpapers.all").removeById(id).write();
         dispatch("showSuccessNotification", "Wallpaper deleted", { root: true });
     },
     async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, title }: { base64: string, title: string }) {

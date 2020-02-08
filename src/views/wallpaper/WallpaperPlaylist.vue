@@ -34,7 +34,7 @@
                         <v-col>
                             <wallpaper-playlist-view
                                 v-if="state.selected"
-                                :playlist="state.selected"
+                                :playlistId="state.selected.id"
                                 @update="editPlaylist"
                                 @close="reset"
                             />
@@ -43,12 +43,12 @@
                 </v-card-text>
             </v-card>
             <v-dialog
-                max-width="1200" v-model="state.playlistDialog"
-                v-if="state.playlistDialog"
+                v-model="state.playlistDialog"
+                max-width="1200"
             >
                 <wallpaper-playlist-form
-                    :edited-item='state.editedItem'
-                    @close="state.playlistDialog = false"
+                    :edited-item-id='state.editedItemId'
+                    @close="reset"
                 />
             </v-dialog>
         </v-col>
@@ -78,12 +78,12 @@ export default createComponent({
             playlistDialog: false,
             playlists: [],
             selected: null,
-            editedItem: null
+            editedItemId: null
         });
 
         watch(() => state.playlistDialog, (value) => {
             if (!value) {
-                state.editedItem = null;
+                state.editedItemId = null;
             }
         });
 
@@ -98,13 +98,13 @@ export default createComponent({
 
         const reset = () => {
             state.selected = null;
-            state.playlistWallpapers = null;
+            state.playlistDialog = false;
             state.playlists = [];
             load();
         };
 
         const editPlaylist = () => {
-            state.editedItem = state.selected;
+            state.editedItemId = state.selected.id;
             state.playlistDialog = true;
         };
 

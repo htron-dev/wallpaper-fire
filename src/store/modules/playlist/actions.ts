@@ -3,17 +3,63 @@ import { RootState } from "@/store";
 import { PlayList, PlayListState } from "./state";
 
 const actions: ActionTree<PlayListState, RootState> = {
-    async update ({ commit, rootGetters }, { id, playlist }) {
+    /**
+     * Get by id method
+     * @param store
+     * @param id
+     * ==================================================
+     */
+    async getById ({ rootGetters, dispatch }, id: number) {
+        // get the db
+        const db = rootGetters["db/get"];
+        // create the playlist
+        const playlist = db.get("playlist.all").getById(id).value();
+
+        return playlist;
+    },
+    /**
+     * Create method
+     * @param store
+     * @param playlist
+     * ==================================================
+     */
+    async create ({ rootGetters, dispatch }, playlist: PlayList) {
+        // get the db
+        const db = rootGetters["db/get"];
+        // create the playlist
+        db.get("playlist.all").insert(playlist).write();
+
+        dispatch("showSuccessNotification", `Playlist ${playlist.title} created`, { root: true });
+
+        return playlist;
+    },
+    /**
+     * Update method
+     * @param store
+     * @param data: { playlist, id }
+     * ==================================================
+     */
+    async update ({ rootGetters, dispatch }, { id, playlist }) {
         // get the db
         const db = rootGetters["db/get"];
         // update the playlist
         db.get("playlist.all").updateById(id, playlist).write();
+
+        dispatch("showSuccessNotification", "Playlist updated", { root: true });
     },
-    async delete ({ commit, rootGetters }, id) {
+    /**
+     * Delete method
+     * @param store
+     * @param id
+     * ==================================================
+     */
+    async delete ({ dispatch, rootGetters }, id) {
         // get the db
         const db = rootGetters["db/get"];
         // delete the playlist
         db.get("playlist.all").removeById(id).write();
+
+        dispatch("showSuccessNotification", "Playlist deleted", { root: true });
     },
     async setPlaylist ({ rootGetters, dispatch, commit }, playlist: PlayList) {
         // just set the interval if is more that 5 minutes

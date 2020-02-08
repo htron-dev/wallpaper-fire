@@ -1,7 +1,10 @@
 <template>
-    <v-card flat class="fill-height">
+    <v-card
+        v-if="state.playlist"
+        flat
+        class="fill-height">
         <v-card-title>
-            {{playlist.title}}
+            {{state.playlist.title}}
             <v-spacer />
             <v-btn
                 v-if="!state.haveActivePlaylist"
@@ -47,8 +50,8 @@
                 </v-list>
             </v-menu>
         </v-card-title>
-        <v-card-subtitle v-if="playlist.description">
-            {{playlist.description}}
+        <v-card-subtitle v-if="state.playlist.description">
+            {{state.playlist.description}}
         </v-card-subtitle>
         <v-card-text>
             <v-row>
@@ -98,20 +101,28 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from "@vue/composition-api";
+import { createComponent, reactive, computed, watch } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
+import { PlayList } from "../../store/modules/playlist/state";
+
+type State = {
+    playlist: PlayList | null;
+    selected: string[]
+    [props: string]: any;
+};
 
 export default createComponent({
     props: {
-        playlist: {
-            type: Object,
+        playlistId: {
+            type: String,
             required: true
         }
     },
     setup (props, { emit }) {
-        const state = reactive<any>({
+        const state = reactive<State>({
             wallpapers: [],
             selected: [],
+            playlist: null,
             loading: true,
             menu: false,
             alertDialog: false,
@@ -124,24 +135,43 @@ export default createComponent({
         });
 
         const store = useStore();
-        const load = () => {
+        const load = async () => {
+            state.loading = true;
             state.wallpapers = store.getters["wallpaper/getAll"];
+            const playlist = await store.dispatch("playlist/getById", props.playlistId);
+            state.playlist = playlist;
+            state.selected = playlist.wallpaperIds;
             setTimeout(() => {
                 state.loading = false;
             }, 800);
         };
         const usePlaylist = () => {
-            store.dispatch("playlist/setPlaylist", state.selected);
+            store.dispatch("playlist/setPlaylist", state.playlist);
         };
         const stopCurrentPlaylist = () => {
             store.dispatch("playlist/stopPlaylist");
         };
 
         const updatePlaylist = () => {
-            store.dispatch("playlist/update", props.playlist.id);
+            if (state.playlist === null) {
+                return;
+            }
+            const data = {
+                id: props.playlistId,
+                playlist: state.playlist
+            };
+            data.playlist.wallpaperIds = state.selected;
+            store.dispatch("playlist/update", data);
         };
+
+        watch(() => props.playlistId, () => load());
+        watch(() => state.selected, () => {
+            if (!state.loading) {
+                updatePlaylist();
+            }
+        });
         const deletePlaylist = () => {
-            store.dispatch("playlist/delete", props.playlist.id);
+            store.dispatch("playlist/delete", props.playlistId);
             state.alertDialog = false;
             emit("close");
         };
@@ -151,7 +181,8 @@ export default createComponent({
         return {
             state,
             usePlaylist,
-            deletePlaylist
+            deletePlaylist,
+            stopCurrentPlaylist
         };
     }
 });

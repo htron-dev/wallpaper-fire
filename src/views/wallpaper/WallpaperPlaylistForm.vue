@@ -4,7 +4,7 @@
         @submit.prevent="submit">
         <v-card>
             <v-card-title class="blue white--text font-weight-bold">
-                <h2 class="title">Add a new playlist</h2>
+                <h2 class="title">{{state.labels.formTitle}}</h2>
             </v-card-title>
             <v-card-text>
                 <v-row>
@@ -94,7 +94,7 @@
                     color="success"
                     large
                     type="submit">
-                    Create playlist
+                    {{state.labels.submitButton}}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -102,16 +102,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, ref, computed } from "@vue/composition-api";
+import { createComponent, reactive, ref, computed, watch } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
 import state, { PlayList } from "../../store/modules/playlist/state";
-type Props = {
-    editedItem: PlayList
-};
-export default createComponent<Props>({
+
+export default createComponent({
     props: {
-        editedItem: {
-            type: Object,
+        editedItemId: {
+            type: [Number, String],
             required: false,
             default: null
         }
@@ -129,7 +127,15 @@ export default createComponent<Props>({
             },
             wallpapers: [],
             labels: computed(() => {
-                const labels = {};
+                const labels = {
+                    formTitle: "Create playlist",
+                    submitButton: "Create"
+                };
+                if (props.editedItemId) {
+                    labels.formTitle = "Edit playlist";
+                    labels.submitButton = "Save";
+                }
+
                 return labels;
             }),
             rules: {
@@ -145,13 +151,27 @@ export default createComponent<Props>({
         });
         // ref form
         const form = ref<any>(null);
-        const load = () => {
-            if (props.editedItem) {
-                state.playlist = props.editedItem;
+        const load = async () => {
+            if (props.editedItemId) {
+                const playlist = await store.dispatch("playlist/getById", props.editedItemId);
+                state.playlist = playlist;
             }
             // get the list of all wallpaperss
             state.wallpapers = store.getters["wallpaper/getAll"];
         };
+
+        watch(() => props.editedItemId, () => {
+            state.playlist = {
+                wallpaperIds: [],
+                config: {
+                    delay: null
+                }
+            };
+            if (form.value) {
+                form.value.resetValidation();
+                load();
+            }
+        });
 
         // function to create a playes
         const submit = async () => {
@@ -159,9 +179,9 @@ export default createComponent<Props>({
                 return;
             }
 
-            if (props.editedItem) {
+            if (props.editedItemId) {
                 const data = {
-                    id: props.editedItem.id,
+                    id: props.editedItemId,
                     playlist: state.playlist
                 };
 

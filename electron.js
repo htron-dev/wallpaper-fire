@@ -13,12 +13,19 @@ app.on("ready", () => {
     });
 
     window.once("ready-to-show", () => {
-        Database.setup().then(() => window.show());
+        Database.setup().then(() => {
+            window.show();
+        });
     });
 
     ipcMain.handle("setup-database", async (event) => {
         const configPath = await Database.setup();
         return configPath;
+    });
+    ipcMain.on("set-window-bounds", () => {
+        const db = Database.connect();
+        const bounds = db.get("app.window").value();
+        window.setBounds(bounds);
     });
 
     if (process.env.NODE_ENV === "production") {
