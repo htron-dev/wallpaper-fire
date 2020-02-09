@@ -1,16 +1,20 @@
 {
   "name": "wallpaper-fire",
-  "version": "0.9.2",
+  "version": "1.0.0",
   "license": "MIT",
   "private": true,
   "main": "electron.js",
   "repository": "https://github.com/hawk-developments/wallpaper-fire.git",
   "build": {
-    "target": "snap",
+    "target": "appimage",
     "appId": "com.htron-dev.wallpaper-fire",
     "productName": "Wallpaper fire",
     "directories":{
+      "buildResources": "resources",
       "output": "build"
+    },
+    "linux":{
+      "icon": "./resources/icons"
     }
   },
   "scripts": {
@@ -19,7 +23,8 @@
     "serve": "vue-cli-service serve",
     "electron": "electron . ",
     "build": "vue-cli-service build",
-    "deploy": "npm run clean && npm run build && electron-builder",
+    "deploy": "npm run clean && npm run build && npm run builder",
+    "builder": "electron-builder",
     "clean": "rm -rf build dist",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",

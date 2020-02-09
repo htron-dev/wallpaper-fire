@@ -64,7 +64,12 @@
                                         </v-list-item-content>
                                         <template v-else>
                                             <v-list-item-content>
-                                                {{item.name}}
+                                                <v-list-item-title>
+                                                    {{item.name}}
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle v-if="item.description">
+                                                    {{item.description}}
+                                                </v-list-item-subtitle>
                                             </v-list-item-content>
                                             <v-list-item-action v-if="item.href">
                                                 <v-btn icon @click="openExternalLink(item.href)">

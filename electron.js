@@ -34,11 +34,16 @@ app.on("ready", () => {
         window.loadFile("./dist/index.html");
     }
 
-    // build menu
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    if (process.env.NODE_ENV === "development") {
+        // build menu
+        const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
 
-    // insert menu
-    Menu.setApplicationMenu(mainMenu);
+        // insert menu
+        Menu.setApplicationMenu(mainMenu);
+    } else {
+        Menu.setApplicationMenu(null);
+    }
+
     // save resize options
     window.on("resize", () => {
         const db = Database.connect();

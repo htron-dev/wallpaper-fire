@@ -139,7 +139,7 @@
                         </v-card>
                         <v-divider
                             :key="`divider ${index}`"
-                            v-if="index !== state.notifications.length - 1 && notifications.length > 2"
+                            v-if="index !== state.notifications.length - 1 && state.notifications.length > 2"
                         />
                     </template>
                 </v-list>
@@ -178,7 +178,6 @@ export default createComponent({
         });
         const openExternalLink = store.state.openExternalLink;
         const removeNotification = (notification: any) => {
-            state.menus.notification = false;
             store.dispatch("removeNotification", notification.id);
         };
         const clearAllNotifications = () => {
