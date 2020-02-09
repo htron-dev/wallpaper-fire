@@ -18,6 +18,18 @@ const getScript = (file: string) => {
 
     return plasmaScript;
 };
+const getScriptToDefault = () => {
+    const plasmaScript = `dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
+    var Desktops = desktops();                                                                                                                       
+    for (i=0;i<Desktops.length;i++) {
+            d = Desktops[i];
+            d.wallpaperPlugin = "org.kde.image";
+            d.currentConfigGroup = Array("Wallpaper",
+                                        "org.kde.image",
+                                        "General");
+    }'`;
+    return plasmaScript;
+};
 
 const actions: ActionTree<{}, RootState> = {
     async setup ({ dispatch }) {
@@ -60,6 +72,20 @@ const actions: ActionTree<{}, RootState> = {
             const notification = {
                 color: "error",
                 message: "[KDE MODULE] Error in set wallpaper",
+                icon: "mdi-alert"
+            };
+            dispatch("showImportantNotification", notification, { root: true });
+        }
+    },
+    async stopAll ({ dispatch }) {
+        const command = getScriptToDefault();
+        try {
+            const { stdout, stderr } = await exec(command);
+            dispatch("showSuccessNotification", "[KDE MODULE] Stop all live wallpapers", { root: true });
+        } catch (error) {
+            const notification = {
+                color: "error",
+                message: "[KDE MODULE] Error in stop all live wallpaper",
                 icon: "mdi-alert"
             };
             dispatch("showImportantNotification", notification, { root: true });

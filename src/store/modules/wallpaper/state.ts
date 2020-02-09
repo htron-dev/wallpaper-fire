@@ -6,8 +6,12 @@ export type Wallpaper = {
     thumb: string | null;
     config: any;
 };
-export type WallpaperState = {};
+export type WallpaperState = {
+    current: Wallpaper | null;
+};
 
-const state: WallpaperState = {};
+const state: WallpaperState = {
+    current: null
+};
 
 export default state;
