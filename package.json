@@ -1,26 +1,40 @@
 {
-  "name": "render",
-  "version": "0.1.0",
+  "name": "wallpaper-fire",
+  "version": "1.0.0",
+  "license": "MIT",
   "private": true,
+  "main": "electron.js",
+  "repository": "https://github.com/hawk-developments/wallpaper-fire.git",
+  "build": {
+    "target": "appimage",
+    "appId": "com.htron-dev.wallpaper-fire",
+    "productName": "Wallpaper fire",
+    "directories":{
+      "buildResources": "resources",
+      "output": "build"
+    },
+    "linux":{
+      "icon": "./resources/icons"
+    }
+  },
   "scripts": {
+    "start": "electron .",
+    "dev": "export NODE_ENV=development && npm run serve & npm run electron",
     "serve": "vue-cli-service serve",
-    "dev": "npm run serve & npm run electron",
-    "electron": "NODE_ENV=production electron . ",
-    "electron:dev": "NODE_ENV=development electron . ",
+    "electron": "electron . ",
     "build": "vue-cli-service build",
-    "build:dev": "vue-cli-service build --mode=development",
+    "deploy": "npm run clean && npm run build && npm run builder",
+    "builder": "electron-builder",
+    "clean": "rm -rf build dist",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "lint:fix": "vue-cli-service lint --fix",
-    "start": "vue-cli-service build && electron ."
+    "lint:fix": "vue-cli-service lint --fix"
   },
-  "main": "electron.js",
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
     "@mdi/font": "^3.6.95",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.6.4",
-    "electron": "^7.1.11",
     "lodash": "^4.17.15",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
@@ -32,6 +46,7 @@
     "vuex": "^3.1.2"
   },
   "devDependencies": {
+    "electron": "^7.1.11",
     "@types/chai": "^4.2.8",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.4",
@@ -46,6 +61,7 @@
     "@vue/eslint-config-typescript": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "chai": "^4.1.2",
+    "electron-builder": "^22.3.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.13.1",

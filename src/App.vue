@@ -11,8 +11,10 @@
             v-for="(notification, index) in notifications.filter(n => n.show)"
             v-model="notification.show"
             :color="notification.color"
+            :timeout="notification.timeout"
             right
             :key="notification.message + Math.random()"
+            class="mb-7"
             :style="`bottom: ${index * 60}px`"
         >
             {{ notification.message }}

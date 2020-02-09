@@ -5,7 +5,8 @@ export type RootState = {
     notifications: any[],
     app: {
         appPath: string,
-        configPath: string,
+        dataPath: string,
+        thumbsPath: string,
         window: any
     },
     history: {

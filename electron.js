@@ -8,7 +8,7 @@ app.on("ready", () => {
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
-            webSecurity: process.env.NODE_ENV === "production"
+            webSecurity: process.env.NODE_ENV !== "development"
         }
     });
 
@@ -28,17 +28,22 @@ app.on("ready", () => {
         window.setBounds(bounds);
     });
 
-    if (process.env.NODE_ENV === "production") {
-        window.loadFile("./dist/index.html");
-    } else {
+    if (process.env.NODE_ENV === "development") {
         window.loadURL("http://localhost:8080");
+    } else {
+        window.loadFile("./dist/index.html");
     }
 
-    // build menu
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    if (process.env.NODE_ENV === "development") {
+        // build menu
+        const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
 
-    // insert menu
-    Menu.setApplicationMenu(mainMenu);
+        // insert menu
+        Menu.setApplicationMenu(mainMenu);
+    } else {
+        Menu.setApplicationMenu(null);
+    }
+
     // save resize options
     window.on("resize", () => {
         const db = Database.connect();
@@ -51,7 +56,7 @@ app.on("ready", () => {
 
 const mainMenuTemplate = [];
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "development") {
     mainMenuTemplate.push(
         {
             label: "Developer tools",
