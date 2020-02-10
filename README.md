@@ -5,6 +5,7 @@ This is an app electron to have video wallpaperlinux.
 ```diff
 - Still is not completly ready, but you can have a look of how the app is
 ```
+You can see the current status in the [Kanaban](https://github.com/htron-dev/wallpaper-fire/projects/2) of the project in "Projects tab"
 
 <a target="_blank" href="https://www.youtube.com/watch?v=WL7wtfSnvZs">
   <img title="See video" src="https://img.youtube.com/vi/WL7wtfSnvZs/maxresdefault.jpg" width="100%" />
@@ -16,6 +17,14 @@ This is an app electron to have video wallpaperlinux.
 
 All I do is just put a layer with some feautures in a plugin called [Smart Video Wallpaper](https://store.kde.org/p/1316299/), this app won't work so good without this plugin so my very thanks to the creator.
 
+## Features
+- Video wallpaper
+- Playlist
+
+## Compatibility
+- [x] KDE plasma
+- [ ] Ubuntu GNOME
+
 ## Installation
 1 - Step one [click here](https://store.kde.org/p/1316299/) to see the last avaliable release.
 
@@ -24,7 +33,7 @@ All I do is just put a layer with some feautures in a plugin called [Smart Video
   * Snap: in terminal execute ```snap install <PATH_TO_APP_SNAP_FILE> --dangerous // <-this is a flag to say to install from local package```
 
 3 - If you not have the Smart Video Wallpaper plugin the app will alert you to install because is an important things to the app works correcly
-4 - (option) config the app to start with th os system
+
 
 ## Usage
 
@@ -32,29 +41,32 @@ All I do is just put a layer with some feautures in a plugin called [Smart Video
   * The tab Playlist is where you will create and manage the playlists.
   * Settings page brings some app informations and dependences required for the module that you are using.
 
-# Features
-- Set videos as wallpaper - done
-- Playlist - buinding
-- Download videos wallapper from web - analisys
-- Integration with Gnome(ubunto, manajaro, etc...) - analisys
-- Control Panel of models to change what plugin or package to use to display the live-wallpaper  - analisys
 
-> Just work in Kde for now and need to have a plugin called: 
-
-## Project setup
+## Development Setup
 ```
 npm install
 ```
 
-### Run Electron app in development mode
+### Run Electron app in prodction mode with dist files
+```
+npm start
+
+```
+### Run Electron app server in development mode width src files
+
 ```
 npm run dev
 ```
 ***obs:*** All vue cli features works like auto-realod, hot-relaod, etc, but you need to await the server be ready and also reload the app when its done, use the button in top of app.
 
-### Compiles and minifies for production
+### Compiles files in dist folder
 ```
 npm run build
+```
+
+### Generate .snap app and .appimage
+```
+npm run deploy
 ```
 
 ### Run your unit tests
