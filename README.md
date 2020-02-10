@@ -2,7 +2,9 @@
 
 
 This is an app electron to have video wallpaperlinux.
-
+```diff
+- Still is not completly ready, but you can have a look of how the app is
+```
 
 <a target="_blank" href="https://www.youtube.com/watch?v=WL7wtfSnvZs">
   <img title="See video" src="https://img.youtube.com/vi/WL7wtfSnvZs/maxresdefault.jpg" width="100%" />
