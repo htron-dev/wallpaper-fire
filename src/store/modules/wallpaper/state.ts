@@ -8,10 +8,12 @@ export type Wallpaper = {
 };
 export type WallpaperState = {
     current: Wallpaper | null;
+    wallpapers: Wallpaper[]
 };
 
 const state: WallpaperState = {
-    current: null
+    current: null,
+    wallpapers: []
 };
 
 export default state;

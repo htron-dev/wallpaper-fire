@@ -1,11 +1,15 @@
 <template>
-    <v-row class="fill-height">
+    <v-row
+        align="start"
+        no-gutters>
         <v-col cols="12">
             <wallpaper-Toobar />
         </v-col>
-        <v-col cols="12">
-            <router-view></router-view>
-        </v-col>
+        <v-fade-transition>
+            <v-col cols="12">
+                <router-view></router-view>
+            </v-col>
+        </v-fade-transition>
     </v-row>
 </template>
 

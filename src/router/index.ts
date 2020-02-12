@@ -22,8 +22,8 @@ const routes = [
         children: [
             {
                 path: "all",
-                name: "wallpaper-all",
-                component: () => import("./../views/wallpaper/WallpaperAll.vue")
+                name: "library",
+                component: () => import("./../views/wallpaper/library/Library.vue")
             },
             {
                 path: "playlist",

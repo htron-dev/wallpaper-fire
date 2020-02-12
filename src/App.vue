@@ -3,7 +3,7 @@
         <w-app-drawer />
         <w-app-bar />
         <v-content>
-            <v-container fluid fill-height>
+            <v-container fluid>
                 <router-view v-if="state.ready" />
             </v-container>
         </v-content>

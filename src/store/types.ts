@@ -13,4 +13,5 @@ export type RootState = {
         lastWallpaperId: null | number,
         lastPlaylistId: null | number,
     },
+    wallpaper: WallpaperState
 }

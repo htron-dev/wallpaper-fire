@@ -9,6 +9,11 @@ const { promisify } = window.require("util");
 const writeFileAsync = promisify(fs.writeFile);
 
 const actions: ActionTree<WallpaperState, RootState> = {
+    setWallpapers ({ rootGetters, commit }) {
+        const db = rootGetters["db/get"];
+        const wallpapers = db.get("wallpapers.all").value();
+        commit("SET_WALLPAPERS", wallpapers);
+    },
     async create ({ rootGetters, dispatch }, wallpaper: Wallpaper) {
         if (!wallpaper.path) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid path", { root: true });

@@ -1,15 +1,20 @@
 <template>
-    <v-toolbar height="80px">
+    <v-toolbar
+        color="blue  lighten-1"
+        height="85px">
         <v-toolbar-items >
             <v-btn
                 v-for="item in items"
-                :key='item.text'
+                :key="item.text"
                 :to="item.to"
+                min-width="300"
+                depressed
                 exact
-                text
-                color='blue'>
+                exact-active-class="blue darken-2"
+                dark
+                color="transparent">
                 <span class="text-center">
-                    <v-icon class="d-block mb-1" dark>{{ item.icon }}</v-icon>
+                    <v-icon class="d-block mb-2" dark>{{ item.icon }}</v-icon>
                     {{item.text}}
                 </span>
             </v-btn>
@@ -23,9 +28,9 @@ export default createComponent({
     setup () {
         const items = [
             {
-                text: "All videos",
+                text: "Library",
                 icon: "mdi-youtube",
-                to: { name: "wallpaper-all" }
+                to: { name: "library" }
             },
             {
                 text: "Playlists",
