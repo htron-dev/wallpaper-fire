@@ -63,7 +63,7 @@ const path = window.require("path");
 
 export default createComponent({
     props: {
-        editableItem: {
+        editedItem: {
             type: Object,
             require: false,
             default: null
@@ -149,13 +149,16 @@ export default createComponent({
             });
         };
 
-        if (props.editableItem) {
-            state.path = props.editableItem.path;
-            state.title = props.editableItem.title;
-            state.title = props.editableItem.title;
-            state.description = props.editableItem.description;
-            state.description = props.editableItem.description;
-            state.thumb = `file://${props.editableItem.thumb}`;
+        if (props.editedItem) {
+            const wallpaper = JSON.parse(JSON.stringify(props.editedItem));
+            state.path = wallpaper.path;
+            state.title = wallpaper.title;
+            state.title = wallpaper.title;
+            state.description = wallpaper.description;
+            state.description = wallpaper.description;
+            if (wallpaper.thumb) {
+                state.thumb = `file://${wallpaper.thumb}`;
+            }
             setVideoPreview();
         }
 
@@ -172,15 +175,15 @@ export default createComponent({
                 thumb: state.thumb
             };
 
-            if (props.editableItem) {
+            if (props.editedItem) {
                 await root.$store.dispatch("wallpaper/edit", {
-                    id: props.editableItem.id,
+                    id: props.editedItem.id,
                     wallpaper: wallpaper
                 });
             } else {
                 await root.$store.dispatch("wallpaper/create", wallpaper);
             }
-
+            root.$store.dispatch("wallpaper/setAll");
             close();
         };
 

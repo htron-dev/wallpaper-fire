@@ -2,16 +2,47 @@
     <div v-if="wallpaper">
         <v-tooltip nudge-bottom="120%" top max-width="400px">
             <template v-slot:activator="{ on }">
-                <v-card v-on="on">
+                <v-card
+                    v-on="on"
+                    link
+                    @click="$emit('click')"
+                >
                     <v-img
+                        v-on="on"
                         v-if='wallpaper.thumb'
                         class="white--text align-end"
                         height="200px"
                         :src="`file://${wallpaper.thumb}`"
+                        @contextmenu="showMenu"
                     >
                     </v-img>
                     <v-icon
+                        v-on="on"
                         v-else size="170">mdi-image</v-icon>
+                    <v-menu
+                        v-model="state.menu.show"
+                        absolute
+                        offset-y
+                        :position-x="state.menu.x"
+                        :position-y="state.menu.y"
+                        min-width="300px"
+                        max-width="700px"
+                    >
+                        <v-list class="py-0">
+                            <v-list-item
+                                v-for="(option, index) in state.options"
+                                :key="index"
+                                @click="option.function"
+                                :class="option.color ? option.color : ''"
+                                :dark="option.dark"
+                            >
+                                <v-list-item-content>
+                                    {{option.text}}
+                                </v-list-item-content>
+
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                 </v-card>
             </template>
             <p class="caption ma-0">{{wallpaper.title}}</p>
@@ -26,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from "@vue/composition-api";
+import { createComponent, reactive } from "@vue/composition-api";
 
 export default createComponent({
     props: {
@@ -36,9 +67,45 @@ export default createComponent({
             default: null
         }
     },
-    setup () {
+    setup (props, { emit, root: { $nextTick } }) {
+        const state = reactive({
+            menu: {
+                show: false,
+                x: null,
+                y: null
+            },
+            options: [
+                {
+                    text: "Edit Wallpapper",
+                    function: () => {
+                        emit("edit", props.wallpaper);
+                    }
+                },
+                {
+                    text: "Delete Wallpapper",
+                    color: "error",
+                    dark: true,
+                    function: () => {
+                        emit("delete", props.wallpaper);
+                    }
+                }
+            ]
+        });
+        const showMenu = (e: any) => {
+            e.preventDefault();
+            if (state.menu.show) {
+                state.menu.show = false;
+                return;
+            }
+            state.menu.x = e.clientX;
+            state.menu.y = e.clientY;
+            $nextTick(() => {
+                state.menu.show = true;
+            });
+        };
         return {
-
+            state,
+            showMenu
         };
     }
 });
