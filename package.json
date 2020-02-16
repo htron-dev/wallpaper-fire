@@ -34,6 +34,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
     "@mdi/font": "^3.6.95",
+    "@types/sinon": "^7.5.1",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.6.4",
     "lodash": "^4.17.15",
@@ -69,6 +70,7 @@
     "jsdom-global": "^3.0.2",
     "node-sass": "^4.13.1",
     "sass-loader": "^8.0.2",
+    "sinon": "^8.1.1",
     "typescript": "^3.7.5",
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.10"

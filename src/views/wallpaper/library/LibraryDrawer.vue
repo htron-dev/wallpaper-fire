@@ -8,9 +8,9 @@
         <v-card flat>
             <v-card-text>
                 <video
-                    id="wallpaper-preview-video"
+                    :src="wallpaper.path"
                     controls
-                    :src="'file://' + wallpaper.path"
+                    class="library-drawer-video"
                     max-width="100%" max-height="100%" />
                 <h1 class="title">{{ $lodash.capitalize(wallpaper.title) }}</h1>
                 <h2
@@ -24,7 +24,7 @@
             <v-card-actions class="mt-4">
                 <div style="width:100%">
                     <v-btn
-                        class="mb-3"
+                        class="mb-3 library-drawer-button"
                         @click="setWallpaper"
                         block
                         color="success">Use wallpaper</v-btn>
@@ -79,7 +79,7 @@ export default createComponent({
 </script>
 
 <style>
-    #wallpaper-preview-video{
+    .library-drawer-video{
         width: 100%;
         min-height: 400px;
         max-height: 100%;
