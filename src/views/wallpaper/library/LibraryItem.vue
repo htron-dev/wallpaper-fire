@@ -6,18 +6,18 @@
                     v-on="on"
                     link
                     @click="$emit('click')"
+                    class="library-item-card"
+                    @contextmenu="showMenu"
                 >
                     <v-img
-                        v-on="on"
                         v-if='wallpaper.thumb'
-                        class="white--text align-end"
+                        class="white--text align-end library-item-thumb"
                         height="200px"
-                        :src="`file://${wallpaper.thumb}`"
-                        @contextmenu="showMenu"
+                        :src="wallpaper.thumb"
                     >
                     </v-img>
                     <v-icon
-                        v-on="on"
+                        class="library-item-thumb-icon"
                         v-else size="170">mdi-image</v-icon>
                     <v-menu
                         v-model="state.menu.show"
@@ -33,7 +33,7 @@
                                 v-for="(option, index) in state.options"
                                 :key="index"
                                 @click="option.function"
-                                :class="option.color ? option.color : ''"
+                                :class="[option.color ? option.color : '', option.class]"
                                 :dark="option.dark"
                             >
                                 <v-list-item-content>
@@ -77,6 +77,7 @@ export default createComponent({
             options: [
                 {
                     text: "Edit Wallpapper",
+                    class: "library-item-edit-button",
                     function: () => {
                         emit("edit", props.wallpaper);
                     }
@@ -84,6 +85,7 @@ export default createComponent({
                 {
                     text: "Delete Wallpapper",
                     color: "error",
+                    class: "library-item-delete-button",
                     dark: true,
                     function: () => {
                         emit("delete", props.wallpaper);

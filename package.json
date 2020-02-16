@@ -21,6 +21,7 @@
     "start": "electron .",
     "serve": "vue-cli-service serve",
     "dev": "NODE_ENV=development npm run electron",
+    "test": "NODE_ENV=mocha vue-cli-service test:unit --include ./__tests__/setup.ts --recursive ./__tests__/",
     "electron": "electron . ",
     "build": "vue-cli-service build",
     "deploy": "npm run clean && npm run build && npm run builder",

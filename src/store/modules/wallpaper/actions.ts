@@ -86,7 +86,7 @@ const actions: ActionTree<WallpaperState, RootState> = {
             let base64Data = base64.replace(/^data:image\/png;base64,/, "");
             const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${title}`;
             await writeFileAsync(filePath, base64Data, "base64");
-            return filePath;
+            return `file://${filePath}`;
         } catch (error) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] Error creating thumb", { root: true });
             return null;
