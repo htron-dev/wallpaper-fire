@@ -1,21 +1,13 @@
 import LibraryItem from "@/views/wallpaper/library/LibraryItem.vue";
-import VueTestUtils, { mount, createLocalVue } from "@vue/test-utils";
-import Vuetify from "vuetify";
-import VueComposition from "@vue/composition-api";
+import { mount } from "@vue/test-utils";
 import { expect } from "chai";
 
 describe("LibraryItem.vue", () => {
-    const localVue = createLocalVue();
-    localVue.use(Vuetify);
-    localVue.use(VueComposition);
-
     const component = (data?: any) => mount(LibraryItem, {
         stubs: {
-            VMenu: "<div><slot></slot></div>"
+            VMenu: "<div><slot></slot></div>" // workaround to avoid requestAnimationFrame error
         },
-        ...data,
-        vuetify: new Vuetify(),
-        localVue
+        ...data
     });
 
     it("should show a image", () => {
@@ -163,5 +155,4 @@ describe("LibraryItem.vue", () => {
         expect(wrapper.emitted("delete").length).to.be.equal(1);
         expect(wrapper.emitted("delete")[0][0]).to.be.equal(wallpaper);
     });
-
 });
