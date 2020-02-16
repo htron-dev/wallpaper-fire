@@ -14,3 +14,4 @@ export default new Vuex.Store<RootState>({
 
 // export store types
 export * from "./types";
+export * from "./use-store";
