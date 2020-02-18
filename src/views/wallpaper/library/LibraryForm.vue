@@ -2,30 +2,18 @@
     <v-form
         ref="form"
         @submit.prevent="submit">
-        <v-card>
+        <v-card v-show="state.path">
             <v-card-text>
-                <div
-                    v-if="!state.path"
-                    class="text-center my-8">
-                    <v-btn
-                        color="blue"
-                        class="white--text"
-                        @click="setFile">
-                        select file
-                        <v-icon class="pl-3">mdi-file</v-icon>
-                    </v-btn>
-                </div>
-                <v-row v-else>
+                <v-row>
                     <v-col
                         cols="12"
-                        md="4">
-                        <v-slider
-                            v-model="state.slide"
-                            label="Choose thumbnail"
-                            max="100"
-                            min="1"
-                        />
-                        <v-img :src="state.thumb" />
+                        md="6"
+                        lg="5"
+                    >
+                        <w-thumbnail-picker
+                            v-if="state.path"
+                            v-model="state.thumb"
+                            :path="state.path" />
                     </v-col>
                     <v-col>
                         <v-text-field
@@ -54,8 +42,10 @@
     </v-form>
 </template>
 
-<script>
-import { createComponent, reactive, watch, ref } from "@vue/composition-api";
+<script lang="ts">
+import { createComponent, reactive, watch, ref, onMounted } from "@vue/composition-api";
+import { getFile } from "./functions";
+import { useStore } from "@/store";
 
 const { dialog } = window.require("electron").remote;
 const fs = window.require("fs");
@@ -69,100 +59,63 @@ export default createComponent({
             default: null
         }
     },
-    setup (props, { emit, root }) {
-        const state = reactive({
-            slide: 1,
-            path: "",
-            title: "",
-            description: "",
-            extname: "",
-            thumb: ""
+    setup (props, { emit }) {
+        const store = useStore();
+
+        const state = reactive<any>({
+            path: null,
+            title: null,
+            description: null,
+            extname: null,
+            thumb: null
         });
 
-        const form = ref(null);
-
-        const video = document.createElement("video");
+        const form = ref<any>(null);
 
         const close = () => {
             emit("close");
         };
 
-        watch(() => state.slide, (old, newSlide) => {
-            if (video && video.duration && video.duration !== Infinity) {
-                video.currentTime = Math.ceil((newSlide / 100) * video.duration);
-            }
-        });
-
         const setFile = async () => {
-            const options = {
-                properties: ["openFile", "multiSelections"]
-            };
-
-            const file = await dialog.showOpenDialog(options);
-
-            if (file.canceld || file.filePaths.length === 0) {
-                root.$store.dispatch("showErrorNotification", "Canceled");
+            try {
+                const options = {
+                    properties: ["openFile", "multiSelections"]
+                };
+                const filePath = await getFile(options);
+                state.extname = path.extname(filePath);
+                state.title = path.basename(filePath).replace(state.extname, "");
+                state.path = `file://${filePath}`;
+            } catch (error) {
+                store.dispatch("showErrorNotification", error);
                 close();
-                return;
             }
-            state.extname = path.extname(file.filePaths[0]);
-            state.title = path.basename(file.filePaths[0]).replace(state.extname, "");
-
-            state.path = file.filePaths[0];
-
-            setVideoPreview();
         };
 
-        const setVideoPreview = () => {
-            video.setAttribute("src", `file://${state.path}`);
-            video.setAttribute("type", `video/${state.extname.replace(".", "")}`);
-
-            video.addEventListener("timeupdate", () => {
-                if (video.duration === Infinity) {
+        /**
+         *  Initial function
+         */
+        const load = async () => {
+            if (props.editedItem) {
+                const wallpaper = JSON.parse(JSON.stringify(props.editedItem));
+                state.path = wallpaper.path;
+                state.title = wallpaper.title;
+                state.title = wallpaper.title;
+                state.description = wallpaper.description;
+                state.description = wallpaper.description;
+                if (wallpaper.thumb) {
+                    state.thumb = wallpaper.thumb;
                 }
-            });
-
-            video.addEventListener("loadedmetadata", () => {
-                if (video.duration === Infinity) {
-                    video.currentTime = 999999999;
-                } else {
-                    video.currentTime = Math.ceil(0.5 * video.duration);
-                }
-            });
-
-            video.addEventListener("seeked", () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                const context = canvas.getContext("2d");
-
-                canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-
-                canvas.toBlob(blob => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = () => {
-                        const base64 = reader.result;
-                        state.thumb = base64;
-                    };
-                });
-            });
+            } else {
+                await setFile();
+            }
         };
 
-        if (props.editedItem) {
-            const wallpaper = JSON.parse(JSON.stringify(props.editedItem));
-            state.path = wallpaper.path;
-            state.title = wallpaper.title;
-            state.title = wallpaper.title;
-            state.description = wallpaper.description;
-            state.description = wallpaper.description;
-            if (wallpaper.thumb) {
-                state.thumb = `file://${wallpaper.thumb}`;
-            }
-            setVideoPreview();
-        }
+        onMounted(load);
 
         const submit = async () => {
+            if (!form.value) {
+                return;
+            }
             if (!form.value.validate()) {
                 return;
             }
@@ -176,14 +129,15 @@ export default createComponent({
             };
 
             if (props.editedItem) {
-                await root.$store.dispatch("wallpaper/edit", {
+                await store.dispatch("wallpaper/edit", {
                     id: props.editedItem.id,
                     wallpaper: wallpaper
                 });
             } else {
-                await root.$store.dispatch("wallpaper/create", wallpaper);
+                await store.dispatch("wallpaper/create", wallpaper);
             }
-            root.$store.dispatch("wallpaper/setAll");
+            await store.dispatch("wallpaper/setWallpapers");
+            emit("submit");
             close();
         };
 

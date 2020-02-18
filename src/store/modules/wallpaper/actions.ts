@@ -22,14 +22,15 @@ const actions: ActionTree<WallpaperState, RootState> = {
         if (!wallpaper.title) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid title", { root: true });
         }
+        const db = rootGetters["db/get"];
+        const id = db.get("wallpapers.all").insert(wallpaper).value().id;
 
         if (wallpaper.thumb && wallpaper.thumb !== "") {
             wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
-                base64: wallpaper.thumb, title: wallpaper.title
+                base64: wallpaper.thumb, id
             });
         }
-        const db = rootGetters["db/get"];
-        db.get("wallpapers.all").insert(wallpaper).write();
+        db.write();
     },
     async edit ({ rootGetters, dispatch }, { id, wallpaper }: { id: number, wallpaper: Wallpaper}) {
         if (!wallpaper.path) {
@@ -41,22 +42,31 @@ const actions: ActionTree<WallpaperState, RootState> = {
         }
 
         // get old wallpaper
-        const oldWallpaper: Wallpaper = rootGetters["wallpaper/findById"](id);
+        const oldWallpaper: Wallpaper = JSON.parse(JSON.stringify(rootGetters["wallpaper/findById"](id)));
 
-        if (oldWallpaper.thumb && wallpaper.thumb) {
-            wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
-                base64: wallpaper.thumb, title: wallpaper.title
-            });
-        } else if (!oldWallpaper.thumb && wallpaper.thumb) {
-            wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
-                base64: wallpaper.thumb, title: wallpaper.title
-            });
+        // if is a file directory
+        if (wallpaper.thumb && !wallpaper.thumb.includes("file://")) {
+            if (oldWallpaper.thumb && wallpaper.thumb) {
+                wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
+                    base64: wallpaper.thumb, id
+                });
+            } else if (!oldWallpaper.thumb && wallpaper.thumb) {
+                wallpaper.thumb = await dispatch("uploadWallpaperThumbnail", {
+                    base64: wallpaper.thumb, id
+                });
+            }
         }
         const db = rootGetters["db/get"];
 
         db.get("wallpapers.all")
             .updateById(id, wallpaper)
             .write();
+
+        if (oldWallpaper.thumb && wallpaper.thumb === null) {
+            await dispatch("deleteWallpaperThumbnail", oldWallpaper.thumb);
+        } else if (oldWallpaper.thumb && wallpaper.thumb) {
+            await dispatch("deleteWallpaperThumbnail", oldWallpaper.thumb);
+        }
 
         dispatch("showSuccessNotification", "Wallpaper updated", { root: true });
     },
@@ -81,10 +91,11 @@ const actions: ActionTree<WallpaperState, RootState> = {
         db.get("wallpapers.all").removeById(id).write();
         dispatch("showSuccessNotification", "Wallpaper deleted", { root: true });
     },
-    async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, title }: { base64: string, title: string }) {
+    async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, id }) {
+
         try {
             let base64Data = base64.replace(/^data:image\/png;base64,/, "");
-            const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${title}`;
+            const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${id}`;
             await writeFileAsync(filePath, base64Data, "base64");
             return `file://${filePath}`;
         } catch (error) {
@@ -92,7 +103,8 @@ const actions: ActionTree<WallpaperState, RootState> = {
             return null;
         }
     },
-    async deleteWallpaperThumbnail ({ rootGetters, dispatch }, path: string) {
+    async deleteWallpaperThumbnail ({ dispatch }, path: string) {
+        path = path.replace("file://", "");
         fs.unlink(path, (err: any) => {
             if (err) {
                 dispatch("showErrorNotification", "[WALLPAPER MODULE] error when delete wallpaper thumb", { root: true });

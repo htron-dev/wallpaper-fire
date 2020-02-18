@@ -16,9 +16,14 @@
                         :src="wallpaper.thumb"
                     >
                     </v-img>
-                    <v-icon
-                        class="library-item-thumb-icon"
-                        v-else size="170">mdi-image</v-icon>
+                    <v-img
+                        v-else
+                        class="white--text align-end library-item-thumb"
+                        height="200px"
+                        contain
+                        :src="state.defaultImage"
+                    >
+                    </v-img>
                     <v-menu
                         v-model="state.menu.show"
                         absolute
@@ -69,6 +74,7 @@ export default createComponent({
     },
     setup (props, { emit, root: { $nextTick } }) {
         const state = reactive({
+            defaultImage: require("@/assets/512x512.png"),
             menu: {
                 show: false,
                 x: null,
