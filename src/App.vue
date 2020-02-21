@@ -12,7 +12,7 @@
             v-model="notification.show"
             :color="notification.color"
             :timeout="notification.timeout"
-            right
+            left
             :key="notification.message + Math.random()"
             class="mb-7"
             :style="`bottom: ${index * 60}px`"

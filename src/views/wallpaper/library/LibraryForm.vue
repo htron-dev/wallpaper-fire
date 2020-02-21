@@ -1,55 +1,54 @@
 <template>
-    <v-form
-        ref="form"
-        @submit.prevent="submit">
-        <v-card v-show="state.path">
-            <v-card-text>
-                <v-row>
-                    <v-col
-                        cols="12"
-                        md="6"
-                        lg="5"
-                    >
-                        <w-thumbnail-picker
-                            v-if="state.path"
-                            v-model="state.thumb"
-                            :path="state.path" />
-                    </v-col>
-                    <v-col>
-                        <v-text-field
-                            v-model="state.title"
-                            :rules="[v => !!v || 'Required field']"
-                            label="Title"
-                        />
-                        <v-textarea
-                            @keyup.ctrl.enter="submit"
-                            label="Description"
-                            v-model="state.description" />
-                    </v-col>
-                </v-row>
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer />
-                <v-btn
-                    @click="close"
-                    color="error">cancel</v-btn>
-                <v-btn
-                    :disabled="state.path === ''"
-                    color="success"
-                    type="submit">save</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-form>
+    <div>
+        <v-form
+            ref="form"
+            @submit.prevent="submit">
+            <v-card v-show="state.path">
+                <v-card-text>
+                    <v-row>
+                        <v-col
+                            cols="12"
+                            md="6"
+                            lg="5"
+                        >
+                            <w-thumbnail-picker
+                                v-if="state.path"
+                                v-model="state.thumb"
+                                :path="state.path" />
+                        </v-col>
+                        <v-col>
+                            <v-text-field
+                                v-model="state.title"
+                                :rules="[v => !!v || 'Required field']"
+                                label="Title"
+                            />
+                            <v-textarea
+                                @keyup.ctrl.enter="submit"
+                                label="Description"
+                                v-model="state.description" />
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                        class="library-form-close-button"
+                        @click="close"
+                        color="error">cancel</v-btn>
+                    <v-btn
+                        class="library-form-submit-button"
+                        color="success"
+                        type="submit">save</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+    </div>
 </template>
 
 <script lang="ts">
 import { createComponent, reactive, watch, ref, onMounted } from "@vue/composition-api";
 import { getFile } from "./functions";
 import { useStore } from "@/store";
-
-const { dialog } = window.require("electron").remote;
-const fs = window.require("fs");
-const path = window.require("path");
 
 export default createComponent({
     props: {
@@ -82,9 +81,9 @@ export default createComponent({
                     properties: ["openFile", "multiSelections"]
                 };
                 const filePath = await getFile(options);
-                state.extname = path.extname(filePath);
-                state.title = path.basename(filePath).replace(state.extname, "");
-                state.path = `file://${filePath}`;
+                state.path = filePath;
+                state.extname = filePath.split(".").pop();
+                state.title = filePath.replace(`.${state.extname}`, "").split("/").pop();
             } catch (error) {
                 store.dispatch("showErrorNotification", error);
                 close();
@@ -99,9 +98,12 @@ export default createComponent({
                 const wallpaper = JSON.parse(JSON.stringify(props.editedItem));
                 state.path = wallpaper.path;
                 state.title = wallpaper.title;
-                state.title = wallpaper.title;
-                state.description = wallpaper.description;
-                state.description = wallpaper.description;
+                state.extname = wallpaper.extname;
+                // set description if edited-item have description
+                if (state.description) {
+                    state.description = wallpaper.description;
+                }
+                // set thumb edited-item have thumbnail
                 if (wallpaper.thumb) {
                     state.thumb = wallpaper.thumb;
                 }
@@ -113,32 +115,36 @@ export default createComponent({
         onMounted(load);
 
         const submit = async () => {
-            if (!form.value) {
-                return;
-            }
-            if (!form.value.validate()) {
-                return;
-            }
-            const wallpaper = {
-                path: state.path,
-                title: state.title,
-                description: state.description,
-                extname: state.extname,
-                timestamp: Date.now(),
-                thumb: state.thumb
-            };
+            try {
+                if (!form.value) {
+                    return;
+                }
+                if (!form.value.validate()) {
+                    return;
+                }
+                const wallpaper = {
+                    path: state.path,
+                    title: state.title,
+                    description: state.description,
+                    extname: state.extname,
+                    thumb: state.thumb
+                };
 
-            if (props.editedItem) {
-                await store.dispatch("wallpaper/edit", {
-                    id: props.editedItem.id,
-                    wallpaper: wallpaper
-                });
-            } else {
-                await store.dispatch("wallpaper/create", wallpaper);
+                if (props.editedItem) {
+                    await store.dispatch("wallpaper/edit", {
+                        id: props.editedItem.id,
+                        wallpaper: wallpaper
+                    });
+                } else {
+                    await store.dispatch("wallpaper/create", wallpaper);
+                }
+
+                await store.dispatch("wallpaper/setWallpapers");
+                emit("submit");
+                close();
+            } catch (error) {
+                throw new Error(error);
             }
-            await store.dispatch("wallpaper/setWallpapers");
-            emit("submit");
-            close();
         };
 
         return {

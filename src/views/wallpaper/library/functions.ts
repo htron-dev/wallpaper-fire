@@ -7,7 +7,7 @@ export async function getFile (options: any): Promise<string> {
             throw new Error("Canceled");
         }
 
-        return file.filePaths[0];
+        return `file://${file.filePaths[0]}`;
     } catch (error) {
         throw new Error(error);
     }

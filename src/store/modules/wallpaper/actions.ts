@@ -22,6 +22,9 @@ const actions: ActionTree<WallpaperState, RootState> = {
         if (!wallpaper.title) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid title", { root: true });
         }
+        // set timestam date
+        wallpaper.timestamp = Date.now();
+
         const db = rootGetters["db/get"];
         const id = db.get("wallpapers.all").insert(wallpaper).value().id;
 
@@ -92,7 +95,6 @@ const actions: ActionTree<WallpaperState, RootState> = {
         dispatch("showSuccessNotification", "Wallpaper deleted", { root: true });
     },
     async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, id }) {
-
         try {
             let base64Data = base64.replace(/^data:image\/png;base64,/, "");
             const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${id}`;
