@@ -52,7 +52,7 @@ export default createComponent({
         }
     },
     setup (props, { emit }) {
-        const state = reactive<any>({
+        const state: any = reactive({
             mode: "default",
             slide: null,
             slideComputed: computed({

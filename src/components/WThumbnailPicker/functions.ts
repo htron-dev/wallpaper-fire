@@ -14,6 +14,7 @@ export function thumbnailPicker (element: HTMLElement, path: string) {
     const source = document.createElement("source");
     source.src = path;
     source.type = `video/${extname[extname.length - 1]}`;
+
     const observers : Observers = {
         "ready": [],
         "setThumbnail": []
@@ -69,6 +70,8 @@ export function thumbnailPicker (element: HTMLElement, path: string) {
     video.addEventListener("durationchange", () => {
         if (video.duration === Infinity || isNaN(video.duration)) {
             video.currentTime = 99 * 99 * 99;
+        } else {
+            setTime(1);
         }
         init();
     });

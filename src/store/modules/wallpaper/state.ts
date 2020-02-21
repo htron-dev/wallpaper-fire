@@ -5,6 +5,8 @@ export type Wallpaper = {
     description?: string;
     thumb: string | null;
     config: any;
+    extname: string;
+    timestamp: number;
 };
 export type WallpaperState = {
     current: Wallpaper | null;

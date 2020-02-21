@@ -18,7 +18,7 @@
                     </v-img>
                     <v-img
                         v-else
-                        class="white--text align-end library-item-thumb"
+                        class="white--text align-end library-item-thumb-default"
                         height="200px"
                         contain
                         :src="state.defaultImage"
@@ -73,6 +73,12 @@ export default createComponent({
         }
     },
     setup (props, { emit, root: { $nextTick } }) {
+         const editWallpaper = () => {
+            emit("edit", props.wallpaper);
+        }
+        const deleteWallpaper = () => {
+            emit("delete", props.wallpaper);
+        }
         const state = reactive({
             defaultImage: require("@/assets/512x512.png"),
             menu: {
@@ -84,18 +90,14 @@ export default createComponent({
                 {
                     text: "Edit Wallpapper",
                     class: "library-item-edit-button",
-                    function: () => {
-                        emit("edit", props.wallpaper);
-                    }
+                    function: () => editWallpaper()
                 },
                 {
                     text: "Delete Wallpapper",
                     color: "error",
                     class: "library-item-delete-button",
                     dark: true,
-                    function: () => {
-                        emit("delete", props.wallpaper);
-                    }
+                    function: () => deleteWallpaper()
                 }
             ]
         });
@@ -113,7 +115,9 @@ export default createComponent({
         };
         return {
             state,
-            showMenu
+            showMenu,
+            editWallpaper,
+            deleteWallpaper
         };
     }
 });

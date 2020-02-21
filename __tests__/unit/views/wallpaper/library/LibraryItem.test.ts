@@ -32,7 +32,7 @@ describe("LibraryItem.vue", () => {
         expect(image.vm.$props.src).to.be.equal(imageSrc);
     });
 
-    it("shoul show a icon if do not have a thumbnail image", () => {
+    it("shoul show a default image if do not have a thumbnail image", async () => {
         // get a sample image for the test
         const imageSrc = "./../../../../resources/wallpapers/images/sample-1.jpg";
         const wrapper = component({
@@ -45,16 +45,15 @@ describe("LibraryItem.vue", () => {
             }
         });
         // get image component
-        const image = wrapper.find(".library-item-thumb");
-
-        // expect do not exist the image component
-        expect(image.exists()).to.be.equal(false);
-
-        // get icon component
-        const icon = wrapper.find(".library-item-thumb-icon");
+        const image = wrapper.find(".library-item-thumb-default");
+        // await nextTick
+        await wrapper.vm.$nextTick();
 
         // expect exist the icon component
-        expect(icon.exists()).to.be.equal(true);
+        expect(image.exists()).to.be.equal(true);
+        
+        // expect src be the default image
+        expect(image.vm.$data.currentSrc.replace("http://localhost/", "")).to.be.equal(wrapper.vm.$data.state.defaultImage);
     });
     it("shoul when click in image emit a envent of click", async () => {
         // get a sample image for the test
