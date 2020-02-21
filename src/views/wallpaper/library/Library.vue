@@ -1,61 +1,73 @@
 <template>
-    <v-row align="start">
-        <template
-            v-for="wallpaper in state.wallpapers">
-            <v-col
-                cols="3"
-                md="3"
-                lg="2"
-                :key="wallpaper.id">
-                <library-item
-                    :wallpaper="wallpaper"
-                    @click="selectWallpaper(wallpaper)"
-                    @edit="editWallpaper"
-                    @delete="handleDeleteWallpaper"
+    <div>
+        
+        <v-row align="start">
+            <template
+                v-for="wallpaper in state.wallpapers">
+                <v-slide-x-transition :key="`transition-${wallpaper.id}`">
+                    <v-col
+                        cols="3"
+                        md="3"
+                        lg="2"
+                        :key="wallpaper.id">
+                        <v-skeleton-loader
+                            v-show="state.loading"
+                            type="image"/>
+                        <library-item
+                            v-show="!state.loading"
+                            :wallpaper="wallpaper"
+                            @click="selectWallpaper(wallpaper)"
+                            @edit="editWallpaper"
+                            @delete="handleDeleteWallpaper"
+                        />
+                    </v-col>
+                </v-slide-x-transition>
+            </template>
+
+            <library-drawer
+                v-if="state.selected"
+                v-model="state.drawer"
+                :wallpaper="state.selected"
+            />
+
+            <v-dialog v-model="state.dialog" max-width="1000">
+                <library-form
+                    v-if="state.dialog"
+                    :edited-item="state.editedItem"
+                    @close="state.dialog = false;"
+                    @submit="setLoading"
                 />
-            </v-col>
-        </template>
-
-        <library-drawer
-            v-if="state.selected"
-            v-model="state.drawer"
-            :wallpaper="state.selected"
-        />
-
-        <v-dialog v-model="state.dialog" max-width="1000">
-            <library-form
-                v-if="state.dialog"
-                :edited-item="state.editedItem"
-                @close="state.dialog = false" />
-        </v-dialog>
-        <w-alert
-            v-model="state.alert"
-            @positive="deleteWallpaper"
-            @negative="state.editedItem = null"
-        />
-        <v-fab-transition>
-            <v-btn
-                v-show="!state.dialog"
-                dark
-                fixed
-                bottom
-                right
-                fab
-                color="success"
-                @click="state.dialog = true"
-            >
-                <v-icon>mdi-plus</v-icon>
-            </v-btn>
-        </v-fab-transition>
-    </v-row>
+            </v-dialog>
+            <w-alert
+                v-model="state.alert"
+                @positive="deleteWallpaper"
+                @negative="state.editedItem = null"
+            />
+            <v-fab-transition>
+                <v-btn
+                    class="library-add-button"
+                    v-show="!state.dialog"
+                    dark
+                    fixed
+                    bottom
+                    right
+                    fab
+                    color="success"
+                    @click="state.dialog = true"
+                >
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+            </v-fab-transition>
+        </v-row>
+    </div>
 </template>
 
 <script lang="ts">
 import { createComponent, reactive, computed, watch } from "@vue/composition-api";
-import { useStore } from "../../../store/use-store";
-import { Wallpaper } from "../../../store/modules/wallpaper/state";
+import { useStore, Wallpaper } from "@/store";
 
 export default createComponent({
+    name: "Library",
     components: {
         LibraryItem: () => import("./LibraryItem.vue"),
         LibraryForm: () => import("./LibraryForm.vue"),
@@ -63,7 +75,8 @@ export default createComponent({
     },
     setup () {
         const store = useStore();
-        const state = reactive<any>({
+        const state: any = reactive({
+            loading: true,
             alert: false,
             dialog: false,
             drawer: false,
@@ -81,6 +94,13 @@ export default createComponent({
         if (state.wallpapers.length === 0) {
             store.dispatch("wallpaper/setWallpapers");
         }
+        const setLoading = () => {
+            state.loading = true;
+            setTimeout(() => {
+                state.loading = false;
+            }, 800);
+        };
+        setLoading();
 
         const selectWallpaper = (wallpaper: Wallpaper) => {
             state.selected = wallpaper;
@@ -106,6 +126,7 @@ export default createComponent({
             selectWallpaper,
             editWallpaper,
             deleteWallpaper,
+            setLoading,
             handleDeleteWallpaper
         };
     }
