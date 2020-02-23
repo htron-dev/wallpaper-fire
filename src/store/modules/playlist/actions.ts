@@ -9,7 +9,7 @@ const actions: ActionTree<PlayListState, RootState> = {
      * @param id
      * ==================================================
      */
-    async getById ({ rootGetters, dispatch }, id: number) {
+    async getById ({ rootGetters }, id: number) {
         // get the db
         const db = rootGetters["db/get"];
         // create the playlist

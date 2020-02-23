@@ -4,7 +4,6 @@ import { WallpaperState, Wallpaper } from "./state";
 import { PlayList } from "../playlist/state";
 const { remote } = window.require("electron");
 const fs = window.require("fs");
-const path = window.require("path");
 const { promisify } = window.require("util");
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -35,7 +34,7 @@ const actions: ActionTree<WallpaperState, RootState> = {
         }
         db.write();
     },
-    async edit ({ rootGetters, dispatch }, { id, wallpaper }: { id: number, wallpaper: Wallpaper}) {
+    async edit ({ rootGetters, dispatch }, { id, wallpaper }: { id: number; wallpaper: Wallpaper}) {
         if (!wallpaper.path) {
             dispatch("showErrorNotification", "[WALLPAPER MODULE] invalid path", { root: true });
         }
@@ -94,9 +93,9 @@ const actions: ActionTree<WallpaperState, RootState> = {
         db.get("wallpapers.all").removeById(id).write();
         dispatch("showSuccessNotification", "Wallpaper deleted", { root: true });
     },
-    async uploadWallpaperThumbnail ({ rootGetters, dispatch }, { base64, id }) {
+    async uploadWallpaperThumbnail ({ dispatch }, { base64, id }) {
         try {
-            let base64Data = base64.replace(/^data:image\/png;base64,/, "");
+            const base64Data = base64.replace(/^data:image\/png;base64,/, "");
             const filePath = `${remote.app.getPath("userData")}/thumbnails/${Date.now()}-${id}`;
             await writeFileAsync(filePath, base64Data, "base64");
             return `file://${filePath}`;

@@ -104,7 +104,7 @@
 <script lang="ts">
 import { createComponent, reactive, ref, computed, watch } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
-import state, { PlayList } from "../../store/modules/playlist/state";
+import { PlayList } from "@/store";
 
 export default createComponent({
     props: {

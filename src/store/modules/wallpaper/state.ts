@@ -1,5 +1,5 @@
 export type Wallpaper = {
-    id: number;
+    id: number | string;
     path: string;
     title: string;
     description?: string;
@@ -10,7 +10,7 @@ export type Wallpaper = {
 };
 export type WallpaperState = {
     current: Wallpaper | null;
-    wallpapers: Wallpaper[]
+    wallpapers: Wallpaper[];
 };
 
 const state: WallpaperState = {

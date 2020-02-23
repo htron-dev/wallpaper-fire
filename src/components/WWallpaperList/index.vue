@@ -49,9 +49,8 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive, Ref } from "@vue/composition-api";
+import { createComponent, computed, reactive } from "@vue/composition-api";
 import { Wallpaper } from "@/store/modules/wallpaper/state";
-const fs = window.require("fs");
 type Props = {
     wallpapers: Wallpaper[];
     value: number[];

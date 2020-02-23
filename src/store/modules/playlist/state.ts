@@ -5,8 +5,8 @@ export type PlayList = {
     wallpaperIds: string[];
     thumb: string | null;
     config: {
-        delay: number, // number of miliconds to change the wallpapers
-    },
+        delay: number; // number of miliconds to change the wallpapers
+    };
 };
 export type PlayListState = {
     timer: any | null;

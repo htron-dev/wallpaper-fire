@@ -52,6 +52,10 @@ export default createComponent({
         }
     },
     setup (props, { emit }) {
+        // refs
+        const wrapper = ref<HTMLElement>(null);
+        let picker: any;
+
         const state: any = reactive({
             mode: "default",
             slide: null,
@@ -76,8 +80,6 @@ export default createComponent({
                 }
             })
         });
-        const wrapper = ref<HTMLElement>(null);
-        let picker: any;
 
         const setLoading = () => {
             state.loading = true;

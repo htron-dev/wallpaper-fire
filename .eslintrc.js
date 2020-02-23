@@ -5,19 +5,14 @@ module.exports = {
         node: true
     },
 
-    extends: [
-        "plugin:vue/essential",
-        "@vue/standard",
-        "@vue/typescript"
-    ],
-
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
         quotes: ["error", "double"],
         indent: ["error", 4],
         semi: ["error", "always"],
-        "vue/html-indent": ["error", 4]
+        "vue/html-indent": ["error", 4],
+        "@typescript-eslint/no-explicit-any": "off"
     },
 
     parserOptions: {
@@ -37,7 +32,7 @@ module.exports = {
         {
             files: [
                 "**/__tests__/**/*.spec.{j,t}s?(x)",
-                "**/__tests__/**/*.test.{j,t}s?(x)",
+                "**/__tests__/**/*.test.{j,t}s?(x)"
             ],
             env: {
                 mocha: true

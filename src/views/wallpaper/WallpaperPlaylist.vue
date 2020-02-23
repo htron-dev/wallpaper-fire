@@ -57,9 +57,7 @@
 
 <script lang="ts">
 import { createComponent, reactive, watch } from "@vue/composition-api";
-import { useStore } from "@/store/use-store";
-import { PlayList } from "@/store/modules/playlist/state";
-import { Wallpaper } from "../../store/modules/wallpaper/state";
+import { PlayList, useStore } from "@/store";
 
 type State = {
     selected: null | any;

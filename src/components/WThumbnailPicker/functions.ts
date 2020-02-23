@@ -1,4 +1,3 @@
-const fs = window.require("fs");
 type Events = "ready" | "setThumbnail";
 type Observers = {
     [key in Events]: Function[]
@@ -15,9 +14,9 @@ export function thumbnailPicker (element: HTMLElement, path: string) {
     source.src = path;
     source.type = `video/${extname[extname.length - 1]}`;
 
-    const observers : Observers = {
-        "ready": [],
-        "setThumbnail": []
+    const observers: Observers = {
+        ready: [],
+        setThumbnail: []
     };
 
     function on (event: Events, fn: Function) {

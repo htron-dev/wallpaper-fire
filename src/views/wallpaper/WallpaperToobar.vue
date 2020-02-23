@@ -1,5 +1,6 @@
 <template>
     <v-toolbar
+        class="wallpaper-toolbar"
         color="blue  lighten-1"
         height="85px">
         <v-toolbar-items >
@@ -23,7 +24,7 @@
 </template>
 
 <script>
-import { createComponent, reactive } from "@vue/composition-api";
+import { createComponent } from "@vue/composition-api";
 export default createComponent({
     setup () {
         const items = [
@@ -46,7 +47,7 @@ export default createComponent({
 </script>
 
 <style scoped>
-    /deep/ .v-toolbar__content {
+    .wallpaper-toolbar .v-toolbar__content {
         padding-left: 0;
     }
 </style>

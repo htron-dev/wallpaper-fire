@@ -39,10 +39,9 @@ export default createComponent({
             const configPath = await ipcRenderer.invoke("setup-database");
             await store.dispatch("db/init", configPath);
             ipcRenderer.send("set-window-bounds");
-            const db = store.getters[""];
             const { _actions } = store as any;
             // loop in all actions and execute all actions that match setup
-            for (let action in _actions) {
+            for (const action in _actions) {
                 if (action.includes("setup")) {
                     root.$store.dispatch(action);
                 }
@@ -52,8 +51,11 @@ export default createComponent({
             }
             state.ready = true;
         };
-
         load();
+        // handle the stop all wallpapers event
+        ipcRenderer.on("stop-live-wallpaper", () => {
+            store.dispatch("stopAllLiveWallpapers");
+        });
         return {
             notifications,
             state,

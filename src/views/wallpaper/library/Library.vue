@@ -120,7 +120,7 @@ export default createComponent({
             state.editedItem = wallpaper;
             state.alert = true;
         };
-        const deleteWallpaper = (wallpaper: Wallpaper) => {
+        const deleteWallpaper = () => {
             store.dispatch("wallpaper/delete", state.editedItem.id);
             state.editedItem = null;
         };
