@@ -73,12 +73,15 @@ export default createComponent({
         }
     },
     setup (props, { emit, root: { $nextTick } }) {
-         const editWallpaper = () => {
+        const editWallpaper = () => {
             emit("edit", props.wallpaper);
-        }
+        };
         const deleteWallpaper = () => {
             emit("delete", props.wallpaper);
-        }
+        };
+        const useWallpaper = () => {
+            emit("use-wallpaper", props.wallpaper);
+        };
         const state = reactive({
             defaultImage: require("@/assets/512x512.png"),
             menu: {
@@ -87,6 +90,11 @@ export default createComponent({
                 y: null
             },
             options: [
+                {
+                    text: "Use Wallpapper",
+                    class: "library-item-use-button",
+                    function: () => useWallpaper()
+                },
                 {
                     text: "Edit Wallpapper",
                     class: "library-item-edit-button",
@@ -117,7 +125,8 @@ export default createComponent({
             state,
             showMenu,
             editWallpaper,
-            deleteWallpaper
+            deleteWallpaper,
+            useWallpaper
         };
     }
 });

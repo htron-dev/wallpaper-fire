@@ -1,5 +1,5 @@
 // libraris
-import { mount  } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { expect } from "chai";
 import sinon from "sinon";
 import Vuetify from "vuetify";
@@ -22,7 +22,7 @@ describe("Library.vue", () => {
     const dispatchSpy = sinon.spy();
     const component = (data?: any) => mount(Library, {
         vuetify: new Vuetify(),
-        ...data,
+        ...data
     });
 
     before("Set the stubs", () => {
@@ -64,6 +64,21 @@ describe("Library.vue", () => {
         expect(wrapper.vm.$data.state.wallpapers.length).to.be.equal(wallpapers.length);
         // expect have a library-item for each wallpaper object
         expect(wrapper.findAll(LibraryItem).length).to.be.equal(wallpapers.length);
+    });
+    it("should when libray-item emit use-wallpaper event dispatch action in store to set as desktop wallpaper", async () => {
+        const wrapper = component();
+        // await nextTick
+        await wrapper.vm.$nextTick();
+        // expect get one library-item
+        const libraryItem = wrapper.find(LibraryItem);
+        // await nextTick
+        await wrapper.vm.$nextTick();
+        // trigger the event
+        libraryItem.vm.$data.useWallpaper();
+        // await nextTick
+        await wrapper.vm.$nextTick();
+        // expect call action with the library-item wallpaper
+        expect(dispatchSpy.calledWith("setDescktopWallpaper", libraryItem.vm.$props.wallpaper)).to.be.equal(true);
     });
     it("should when libray-item emit click event set the selected wallpaper", async () => {
         const wrapper = component();

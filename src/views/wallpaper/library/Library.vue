@@ -1,6 +1,6 @@
 <template>
     <div>
-        
+
         <v-row align="start">
             <template
                 v-for="wallpaper in state.wallpapers">
@@ -16,6 +16,7 @@
                         <library-item
                             v-show="!state.loading"
                             :wallpaper="wallpaper"
+                            @use-wallpaper="useWallpaper(wallpaper)"
                             @click="selectWallpaper(wallpaper)"
                             @edit="editWallpaper"
                             @delete="handleDeleteWallpaper"
@@ -102,6 +103,9 @@ export default createComponent({
         };
         setLoading();
 
+        const useWallpaper = (wallpaper: Wallpaper) => {
+            store.dispatch("setDescktopWallpaper", wallpaper);
+        };
         const selectWallpaper = (wallpaper: Wallpaper) => {
             state.selected = wallpaper;
             state.drawer = true;
@@ -127,7 +131,8 @@ export default createComponent({
             editWallpaper,
             deleteWallpaper,
             setLoading,
-            handleDeleteWallpaper
+            handleDeleteWallpaper,
+            useWallpaper
         };
     }
 });

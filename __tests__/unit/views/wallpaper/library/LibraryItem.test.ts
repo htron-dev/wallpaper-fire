@@ -51,7 +51,7 @@ describe("LibraryItem.vue", () => {
 
         // expect exist the icon component
         expect(image.exists()).to.be.equal(true);
-        
+
         // expect src be the default image
         expect(image.vm.$data.currentSrc.replace("http://localhost/", "")).to.be.equal(wrapper.vm.$data.state.defaultImage);
     });
@@ -104,6 +104,30 @@ describe("LibraryItem.vue", () => {
         expect(wrapper.vm.$data.state.menu.show).to.be.equal(true);
     });
 
+    it("should when click use-wallpaper option emit event to set the wallpaper as desktop wallpaper", async () => {
+        // get a sample image for the test
+        const wallpaper = {
+            path: "./../../../../resources/wallpapers/images/sample-1.jpg",
+            thumb: "./../../../../resources/wallpapers/images/sample-1.jpg",
+            title: "Title"
+        };
+        const wrapper = component({
+            propsData: {
+                wallpaper
+            }
+        });
+        // get use button component
+        const editButton = wrapper.find(".library-item-use-button");
+
+        // trigger click event
+        editButton.trigger("click");
+
+        // await for the next tick
+        await wrapper.vm.$nextTick();
+
+        // expect event be emmited
+        expect(wrapper.emitted("use-wallpaper")[0][0]).to.be.equal(wallpaper);
+    });
     it("should when click in menu edit option emit event of edit", async () => {
         // get a sample image for the test
         const wallpaper = {
