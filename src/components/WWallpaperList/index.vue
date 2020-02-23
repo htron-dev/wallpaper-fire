@@ -22,7 +22,7 @@
                 >
                     <v-img
                         v-if="wallpaper.thumb"
-                        :src="'file://' + wallpaper.thumb"
+                        :src="wallpaper.thumb"
                     />
                     <v-icon v-else size="50px">mdi-image</v-icon>
                 </v-list-item-avatar>
@@ -61,7 +61,7 @@ type Props = {
 
 type State = {
 
-    model: any
+    model: any;
 }
 
 export default createComponent<Props>({
