@@ -82,6 +82,6 @@ export default createComponent({
     .library-drawer-video{
         width: 100%;
         min-height: 400px;
-        max-height: 100%;
+        max-height: 400px;
     }
 </style>
