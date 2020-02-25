@@ -1,5 +1,5 @@
 // make a fake require for electron requests
-const _require: any = (moduleName: string) => {
+const _require: any = () => {
     return {
         promisify: (fn: Function) => fn,
         remote: {
@@ -18,6 +18,6 @@ const _require: any = (moduleName: string) => {
     };
 };
 window.require = _require;
-const app = document.createElement('div');
-app.setAttribute('data-app', "true");
+const app = document.createElement("div");
+app.setAttribute("data-app", "true");
 document.body.append(app);

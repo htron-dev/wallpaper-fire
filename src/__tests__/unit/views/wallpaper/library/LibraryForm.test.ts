@@ -40,13 +40,13 @@ describe("LibraryForm.vue", () => {
         }
     });
     it("should when created call a function to open native dialog to select a video", async () => {
+        // getfile spy
+        const getFileSpy = sinon.spy();
         // create stub for the getFile function
         const getFileStub = sinon.stub(compostionFunctions, "getFile").callsFake(async (options: any) => {
             getFileSpy(options);
             return "./../../../../resources/wallpapers/images/sample-1.jpg";
         });
-        // getfile spy
-        const getFileSpy = sinon.spy();
         // init the component
         wrapper = component();
         // expect the spy function to be called

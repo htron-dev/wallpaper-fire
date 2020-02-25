@@ -13,6 +13,6 @@ Vue.use(VueComposition);
 const requestAnimationFrame = (fn: Function) => fn();
 
 globalThis.requestAnimationFrame = requestAnimationFrame;
-globalThis.HTMLCanvasElement.prototype.getContext = () => {
-    return null;
-};
+// globalThis.HTMLCanvasElement.prototype.getContext = () => {
+//     return null;
+// };
