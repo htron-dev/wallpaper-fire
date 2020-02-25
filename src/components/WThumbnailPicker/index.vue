@@ -11,6 +11,7 @@
                 v-show="!state.loading">
                 <div ref="wrapper" />
                 <v-slider
+                    class="w-thumbnail-picker-slide"
                     v-if="state.mode === 'manual'"
                     v-model="state.slideComputed"
                     max="100"
@@ -18,15 +19,22 @@
                 />
                 <v-card-actions class="justify-center w-thumbnail-picker-actions">
                     <v-btn
+                        class="w-thumbnail-picker-remove-thumb-button"
                         color="info"
                         @click="removeThumb"
                     >
                         Remove
                     </v-btn>
-                    <v-btn color="info" @click="randomThumb">
+                    <v-btn
+                        class="w-thumbnail-picker-random-thumb-button"
+                        color="info"
+                        @click="randomThumb">
                         Random
                     </v-btn>
-                    <v-btn color="info" @click="state.mode = 'manual'">
+                    <v-btn
+                        class="w-thumbnail-picker-manual-thumb-button"
+                        color="info"
+                        @click="state.mode = 'manual'">
                         Manual
                     </v-btn>
                 </v-card-actions>

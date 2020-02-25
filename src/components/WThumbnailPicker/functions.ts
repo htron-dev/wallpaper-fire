@@ -1,5 +1,5 @@
-type Events = "ready" | "setThumbnail";
-type Observers = {
+export type Events = "ready" | "setThumbnail";
+export type Observers = {
     [key in Events]: Function[]
 };
 
