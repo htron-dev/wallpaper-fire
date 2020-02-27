@@ -3,7 +3,7 @@
         <w-app-drawer />
         <w-app-bar />
         <v-content>
-            <v-container fluid fill-height>
+            <v-container fluid>
                 <router-view v-if="state.ready" />
             </v-container>
         </v-content>
@@ -12,7 +12,7 @@
             v-model="notification.show"
             :color="notification.color"
             :timeout="notification.timeout"
-            right
+            left
             :key="notification.message + Math.random()"
             class="mb-7"
             :style="`bottom: ${index * 60}px`"
@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive } from "@vue/composition-api";
+import { defineComponent, computed, reactive } from "@vue/composition-api";
 import { provideStore, useStore } from "@/store/use-store";
 const ipcRenderer = window.require("electron").ipcRenderer;
-export default createComponent({
+export default defineComponent({
     setup (props, { root }) {
         const state = reactive({
             ready: false
@@ -39,10 +39,9 @@ export default createComponent({
             const configPath = await ipcRenderer.invoke("setup-database");
             await store.dispatch("db/init", configPath);
             ipcRenderer.send("set-window-bounds");
-            const db = store.getters[""];
             const { _actions } = store as any;
             // loop in all actions and execute all actions that match setup
-            for (let action in _actions) {
+            for (const action in _actions) {
                 if (action.includes("setup")) {
                     root.$store.dispatch(action);
                 }
@@ -52,8 +51,11 @@ export default createComponent({
             }
             state.ready = true;
         };
-
         load();
+        // handle the stop all wallpapers event
+        ipcRenderer.on("stop-live-wallpaper", () => {
+            store.dispatch("stopAllLiveWallpapers");
+        });
         return {
             notifications,
             state,

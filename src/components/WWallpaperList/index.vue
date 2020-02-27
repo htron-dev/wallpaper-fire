@@ -22,7 +22,7 @@
                 >
                     <v-img
                         v-if="wallpaper.thumb"
-                        :src="'file://' + wallpaper.thumb"
+                        :src="wallpaper.thumb"
                     />
                     <v-icon v-else size="50px">mdi-image</v-icon>
                 </v-list-item-avatar>
@@ -49,9 +49,8 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive, Ref } from "@vue/composition-api";
+import { defineComponent, computed, reactive } from "@vue/composition-api";
 import { Wallpaper } from "@/store/modules/wallpaper/state";
-const fs = window.require("fs");
 type Props = {
     wallpapers: Wallpaper[];
     value: number[];
@@ -61,10 +60,10 @@ type Props = {
 
 type State = {
 
-    model: any
+    model: any;
 }
 
-export default createComponent<Props>({
+export default defineComponent<Props>({
     props: {
         value: {
             type: Array,

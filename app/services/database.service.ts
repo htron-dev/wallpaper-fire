@@ -1,17 +1,18 @@
 // node
-const fs = require("fs");
-const { promisify } = require("util");
-const writeFile = promisify(fs.writeFile);
+import fs from "fs";
+import { promisify } from "util";
 
-const { app } = require("electron");
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
-const lodashId = require("lodash-id");
-//
+import { app } from "electron";
+import low from "lowdb";
+import FileSync from "lowdb/adapters/FileSync";
+import lodashId from "lodash-id";
+
+const writeFile = promisify(fs.writeFile);
 const configPath = `${app.getPath("userData")}/config.json`;
+
 function connect () {
     const adapter = new FileSync(configPath);
-    const db = low(adapter);
+    const db: any = low(adapter);
     db._.mixin(lodashId);
     return db;
 };
@@ -57,11 +58,11 @@ async function setup () {
             return configPath;
         }
     } catch (error) {
-        throw error;
+        throw new Error(error);
     }
 };
 
-module.exports = {
+export const DatabaseService = {
     setup,
     connect
 };

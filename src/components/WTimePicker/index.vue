@@ -30,8 +30,8 @@
 </template>
 
 <script lang="ts">
-import { reactive, createComponent, ref, computed, watch } from "@vue/composition-api";
-export default createComponent({
+import { reactive, defineComponent, computed, watch } from "@vue/composition-api";
+export default defineComponent({
     name: "WTimePicker",
     props: {
         value: {

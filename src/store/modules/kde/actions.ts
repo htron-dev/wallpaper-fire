@@ -36,7 +36,7 @@ const actions: ActionTree<{}, RootState> = {
         exec("kpackagetool5 --list --type Plasma/Wallpaper", (error: any, stdout: string) => {
             if (error) {
                 // snap fails with other methods so i use this way
-                const [_, home, user] = app.getPath("home").split("/");
+                const [, home, user] = app.getPath("home").split("/");
                 const pluginPath = `/${home}/${user}/.local/share/plasma/wallpapers/smartvideowallpaper`;
                 fs.access(pluginPath, (error: any) => {
                     if (error) {
@@ -84,10 +84,10 @@ const actions: ActionTree<{}, RootState> = {
         };
         return informations;
     },
-    async setWallpaperVideo ({ rootState, dispatch }, { path, wallpaper }) {
+    async setWallpaperVideo ({ dispatch }, { path, wallpaper }) {
         const command = getScript(path);
         try {
-            const { stdout, stderr } = await exec(command);
+            await exec(command);
             dispatch("showSuccessNotification", `[KDE MODULE] Set wallpaper ${wallpaper.title}`, { root: true });
         } catch (error) {
             const notification = {
@@ -101,7 +101,7 @@ const actions: ActionTree<{}, RootState> = {
     async stopAll ({ dispatch }) {
         const command = getScriptToDefault();
         try {
-            const { stdout, stderr } = await exec(command);
+            await exec(command);
             dispatch("showSuccessNotification", "[KDE MODULE] Stop all live wallpapers", { root: true });
         } catch (error) {
             const notification = {

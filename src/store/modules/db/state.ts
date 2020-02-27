@@ -5,8 +5,8 @@
 const { remote } = window.require("electron");
 
 export type DBState = {
-    path: string,
-    db: object | null
+    path: string;
+    db: object | null;
 };
 
 const state: DBState = {

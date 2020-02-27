@@ -40,9 +40,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "@vue/composition-api";
 
-export default createComponent({
+export default defineComponent({
     setup () {
         const state = reactive({
             mini: true,

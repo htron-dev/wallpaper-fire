@@ -56,17 +56,15 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, watch } from "@vue/composition-api";
-import { useStore } from "@/store/use-store";
-import { PlayList } from "@/store/modules/playlist/state";
-import { Wallpaper } from "../../store/modules/wallpaper/state";
+import { defineComponent, reactive, watch } from "@vue/composition-api";
+import { PlayList, useStore } from "@/store";
 
 type State = {
     selected: null | any;
     [prop: string]: any;
 };
 
-export default createComponent({
+export default defineComponent({
     components: {
         WallpaperPlaylistForm: () => import("./WallpaperPlaylistForm.vue"),
         WallpaperPlaylistView: () => import("./WallpaperPlaylistView.vue")

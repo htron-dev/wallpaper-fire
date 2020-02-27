@@ -1,5 +1,3 @@
-import camelCase from "lodash/camelCase";
-
 // get all modules
 const requireModule = require.context(".", true, /\.ts$/);
 

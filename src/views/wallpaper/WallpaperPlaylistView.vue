@@ -101,17 +101,17 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed, watch } from "@vue/composition-api";
+import { defineComponent, reactive, computed, watch } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
 import { PlayList } from "../../store/modules/playlist/state";
 
 type State = {
     playlist: PlayList | null;
-    selected: string[]
+    selected: string[];
     [props: string]: any;
 };
 
-export default createComponent({
+export default defineComponent({
     props: {
         playlistId: {
             type: String,
@@ -119,6 +119,8 @@ export default createComponent({
         }
     },
     setup (props, { emit }) {
+        // get store
+        const store = useStore();
         const state = reactive<State>({
             wallpapers: [],
             selected: [],
@@ -126,15 +128,13 @@ export default createComponent({
             loading: true,
             menu: false,
             alertDialog: false,
-            haveActivePlaylist: computed<Boolean>(() => {
+            haveActivePlaylist: computed<boolean>(() => {
                 if (store.state.playlist.timer !== null) {
                     return true;
                 }
                 return false;
             })
         });
-
-        const store = useStore();
         const load = async () => {
             state.loading = true;
             state.wallpapers = store.getters["wallpaper/getAll"];

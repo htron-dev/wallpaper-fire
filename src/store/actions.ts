@@ -42,7 +42,7 @@ const actions: ActionTree<RootState, RootState> = {
         };
         dispatch("showNotification", notification);
     },
-    setUserNotifications ({ dispatch, rootGetters, commit }) {
+    setUserNotifications ({ rootGetters, commit }) {
         const db = rootGetters["db/get"];
         const userNotifications = db
             .get("user.notifications")
@@ -72,7 +72,7 @@ const actions: ActionTree<RootState, RootState> = {
 
         dispatch("setUserNotifications");
     },
-    clearAllNotification ({ dispatch, rootGetters }, id: any) {
+    clearAllNotification ({ dispatch, rootGetters }) {
         const db = rootGetters["db/get"];
 
         db.set("user.notifications", []).write();
@@ -95,7 +95,7 @@ const actions: ActionTree<RootState, RootState> = {
         db.set("history.lastWallpaperId", wallpaper.id).write();
         commit("wallpaper/SET_CURREMT_WALLPAPER", wallpaper, { root: true });
     },
-    async stopAllLiveWallpapers ({ rootGetters, dispatch, commit }) {
+    async stopAllLiveWallpapers ({ dispatch, commit }) {
         dispatch("kde/stopAll", {}, { root: true });
         dispatch("playlist/stopPlaylist", {}, { root: true });
         commit("wallpaper/SET_CURREMT_WALLPAPER", null, { root: true });

@@ -159,10 +159,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive } from "@vue/composition-api";
+import { defineComponent, computed, reactive } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
 
-export default createComponent({
+export default defineComponent({
     setup () {
         const store = useStore();
         const state = reactive({

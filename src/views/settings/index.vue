@@ -93,10 +93,10 @@
 </template>
 
 <script>
-import { createComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
 
-export default createComponent({
+export default defineComponent({
     setup () {
         const store = useStore();
         const state = reactive({

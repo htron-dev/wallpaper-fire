@@ -5,7 +5,7 @@ const low = window.require("lowdb");
 const lodashId = window.require("lodash-id");
 const FileSync = window.require("lowdb/adapters/FileSync");
 const actions: ActionTree<DBState, RootState> = {
-    init ({ state, commit, rootState }, configPath) {
+    init ({ commit }, configPath) {
         const adapter = new FileSync(configPath);
         const db = low(adapter);
         db._.mixin(lodashId);

@@ -1,15 +1,21 @@
 <template>
-    <v-toolbar height="80px">
+    <v-toolbar
+        class="wallpaper-toolbar"
+        color="blue  lighten-1"
+        height="85px">
         <v-toolbar-items >
             <v-btn
                 v-for="item in items"
-                :key='item.text'
+                :key="item.text"
                 :to="item.to"
+                min-width="300"
+                depressed
                 exact
-                text
-                color='blue'>
+                exact-active-class="blue darken-2"
+                dark
+                color="transparent">
                 <span class="text-center">
-                    <v-icon class="d-block mb-1" dark>{{ item.icon }}</v-icon>
+                    <v-icon class="d-block mb-2" dark>{{ item.icon }}</v-icon>
                     {{item.text}}
                 </span>
             </v-btn>
@@ -18,14 +24,14 @@
 </template>
 
 <script>
-import { createComponent, reactive } from "@vue/composition-api";
-export default createComponent({
+import { defineComponent } from "@vue/composition-api";
+export default defineComponent({
     setup () {
         const items = [
             {
-                text: "All videos",
+                text: "Library",
                 icon: "mdi-youtube",
-                to: { name: "wallpaper-all" }
+                to: { name: "library" }
             },
             {
                 text: "Playlists",
@@ -41,7 +47,7 @@ export default createComponent({
 </script>
 
 <style scoped>
-    /deep/ .v-toolbar__content {
+    .wallpaper-toolbar .v-toolbar__content {
         padding-left: 0;
     }
 </style>
