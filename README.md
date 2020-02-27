@@ -1,7 +1,7 @@
 # Wallpaper-fire
 
 
-This App electron to have video wallpaperlinux.
+App electron to have video wallpaper in linux.
 
 <a target="_blank" href="https://www.youtube.com/watch?v=WL7wtfSnvZs">
   <img title="See video" src="https://img.youtube.com/vi/WL7wtfSnvZs/maxresdefault.jpg" width="100%" />
