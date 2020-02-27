@@ -2,16 +2,23 @@
   "name": "wallpaper-fire",
   "version": "1.1.0",
   "private": true,
+  "description": "Live wallpaper app to use with linux distros",
+  "author": {
+    "name": "Henrique de Oliveira",
+    "email": "henrique@htron-dev.com",
+    "url": "https://htron-dev.com"
+  },
   "build": {
     "target": "appimage",
     "appId": "com.htron-dev.wallpaper-fire",
     "productName": "Wallpaper fire",
     "directories": {
-      "buildResources": "resources",
+      "buildResources": "dist/app/resources",
       "output": "build"
     },
     "linux": {
-      "icon": "./resources/icons"
+      "icon": "./dist/app/resources/icons",
+      "target": ["Appimage"]
     }
   },
   "main": "dist/app/index.js",
