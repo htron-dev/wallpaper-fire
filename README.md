@@ -1,11 +1,7 @@
 # Wallpaper-fire
 
 
-This is an app electron to have video wallpaperlinux.
-```diff
-- Still is not completly ready, but you can have a look of how the app is
-```
-You can see the current status in the [Kanaban](https://github.com/htron-dev/wallpaper-fire/projects/2) of the project in "Projects tab"
+This App electron to have video wallpaperlinux.
 
 <a target="_blank" href="https://www.youtube.com/watch?v=WL7wtfSnvZs">
   <img title="See video" src="https://img.youtube.com/vi/WL7wtfSnvZs/maxresdefault.jpg" width="100%" />
@@ -28,9 +24,7 @@ All I do is just put a layer with some feautures in a plugin called [Smart Video
 ## Installation
 1 - Step one [click here](https://store.kde.org/p/1316299/) to see the last avaliable release.
 
-2 - Dowload one of the app install file, .snap or .appimage
-  * Appimage: just execute the file and it is ready
-  * Snap: in terminal execute ```snap install <PATH_TO_APP_SNAP_FILE> --dangerous // <-this is a flag to say to install from local package```
+2 - Dowload the .appimage and just execute the file and it is ready
 
 3 - If you not have the Smart Video Wallpaper plugin the app will alert you to install because is an important things to the app works correcly
 
@@ -50,9 +44,8 @@ npm install
 ### Run Electron app in prodction mode with dist files
 ```
 npm start
-
 ```
-### Run Electron app server in development mode width src files
+### Run Electron app server in development mode using server url
 
 ```
 npm run dev
@@ -64,12 +57,7 @@ npm run dev
 npm run build
 ```
 
-### Generate .snap app and .appimage
-```
-npm run deploy
-```
-
-### Run your unit tests
+### Run unit tests
 ```
 npm run test
 ```
@@ -77,4 +65,8 @@ npm run test
 ### Lints and fixes files
 ```
 npm run lint
+```
+### Generate .snap app and .appimage
+```
+npm run deploy
 ```
