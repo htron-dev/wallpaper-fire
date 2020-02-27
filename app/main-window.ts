@@ -1,10 +1,11 @@
-import { BrowserWindow, App, ipcMain, Menu } from "electron";
+import { BrowserWindow, ipcMain, Menu } from "electron";
 import { DatabaseService } from "./services";
 import path from "path";
 
 let mainWindow: BrowserWindow;
-export default function createMainWindow (app: App) {
+export default function createMainWindow () {
     mainWindow = new BrowserWindow({
+        icon: path.join(__dirname, "/resources/icons/512x512.png"),
         show: false,
         skipTaskbar: true,
         webPreferences: {
@@ -15,6 +16,7 @@ export default function createMainWindow (app: App) {
     });
 
     mainWindow.on("show", () => {
+        mainWindow.setSkipTaskbar(true);
         const db = DatabaseService.connect();
         const bounds = db.get("app.window").value();
         mainWindow.setBounds(bounds);
@@ -30,9 +32,11 @@ export default function createMainWindow (app: App) {
         e.preventDefault();
         mainWindow.hide();
     });
-    mainWindow.on("close", () => {
-        mainWindow.destroy();
-        app.quit();
+
+    // on close destroy the app
+    mainWindow.on("close", (e) => {
+        e.preventDefault();
+        mainWindow.hide();
     });
 
     ipcMain.handle("setup-database", async () => {

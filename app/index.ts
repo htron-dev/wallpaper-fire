@@ -4,8 +4,8 @@ import createMainWindow from "./main-window";
 
 let mainWindow: BrowserWindow;
 app.on("ready", () => {
-    mainWindow = createMainWindow(app);
-    createTray(mainWindow);
+    mainWindow = createMainWindow();
+    createTray(mainWindow, app);
 });
 
 const mainMenuTemplate: MenuItemConstructorOptions[] = [];
