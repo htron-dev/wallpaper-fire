@@ -23,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive } from "@vue/composition-api";
+import { defineComponent, computed, reactive } from "@vue/composition-api";
 import { provideStore, useStore } from "@/store/use-store";
 const ipcRenderer = window.require("electron").ipcRenderer;
-export default createComponent({
+export default defineComponent({
     setup (props, { root }) {
         const state = reactive({
             ready: false

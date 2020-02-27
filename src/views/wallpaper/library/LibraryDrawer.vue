@@ -35,10 +35,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from "@vue/composition-api";
+import { defineComponent, reactive, computed } from "@vue/composition-api";
 import { useStore } from "@/store/use-store";
 
-export default createComponent({
+export default defineComponent({
     name: "LibraryDrawer",
     props: {
         value: {

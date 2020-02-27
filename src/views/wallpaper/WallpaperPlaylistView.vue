@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed, watch } from "@vue/composition-api";
+import { defineComponent, reactive, computed, watch } from "@vue/composition-api";
 import { useStore } from "../../store/use-store";
 import { PlayList } from "../../store/modules/playlist/state";
 
@@ -111,7 +111,7 @@ type State = {
     [props: string]: any;
 };
 
-export default createComponent({
+export default defineComponent({
     props: {
         playlistId: {
             type: String,

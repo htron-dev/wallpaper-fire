@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, reactive } from "@vue/composition-api";
+import { defineComponent, computed, reactive } from "@vue/composition-api";
 import { Wallpaper } from "@/store/modules/wallpaper/state";
 type Props = {
     wallpapers: Wallpaper[];
@@ -63,7 +63,7 @@ type State = {
     model: any;
 }
 
-export default createComponent<Props>({
+export default defineComponent<Props>({
     props: {
         value: {
             type: Array,

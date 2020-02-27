@@ -64,10 +64,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed, watch } from "@vue/composition-api";
+import { defineComponent, reactive, computed, watch } from "@vue/composition-api";
 import { useStore, Wallpaper } from "@/store";
 
-export default createComponent({
+export default defineComponent({
     name: "Library",
     components: {
         LibraryItem: () => import("./LibraryItem.vue"),

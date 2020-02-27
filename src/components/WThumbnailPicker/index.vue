@@ -44,10 +44,10 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, onMounted, reactive, computed } from "@vue/composition-api";
+import { defineComponent, ref, onMounted, reactive, computed } from "@vue/composition-api";
 import { thumbnailPicker } from "./functions";
 
-export default createComponent({
+export default defineComponent({
     props: {
         path: {
             type: String,

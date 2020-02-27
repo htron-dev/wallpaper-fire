@@ -46,11 +46,11 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, ref, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, ref, onMounted } from "@vue/composition-api";
 import { getFile } from "./functions";
 import { useStore } from "@/store";
 
-export default createComponent({
+export default defineComponent({
     props: {
         editedItem: {
             type: Object,

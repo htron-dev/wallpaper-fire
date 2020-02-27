@@ -33,9 +33,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive, computed } from "@vue/composition-api";
+import { defineComponent, reactive, computed } from "@vue/composition-api";
 
-export default createComponent({
+export default defineComponent({
     props: {
         value: {
             type: Boolean,

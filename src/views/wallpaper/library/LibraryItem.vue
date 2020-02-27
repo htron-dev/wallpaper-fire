@@ -62,9 +62,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "@vue/composition-api";
 
-export default createComponent({
+export default defineComponent({
     props: {
         wallpaper: {
             type: Object,
