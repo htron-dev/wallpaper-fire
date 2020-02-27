@@ -13,11 +13,10 @@
     "appId": "com.htron-dev.wallpaper-fire",
     "productName": "Wallpaper fire",
     "directories": {
-      "buildResources": "dist/app/resources",
       "output": "build"
     },
     "linux": {
-      "icon": "./dist/app/resources/icons",
+      "icon": "dist/app/resources/icons",
       "target": ["Appimage"]
     }
   },

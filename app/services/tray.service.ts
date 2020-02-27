@@ -6,7 +6,7 @@ let tray: Tray;
 
 export function createTray (window: BrowserWindow, app: Electron.App) {
     // tray icon paths
-    const iconPath = path.resolve(__dirname, "./../resources/icons/32x32.png");
+    const iconPath = path.resolve(__dirname, "../resources/icons/32x32.png");
     // init the tray
     tray = new Tray(iconPath);
     // set the tooptip
