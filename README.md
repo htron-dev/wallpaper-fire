@@ -3,11 +3,6 @@
 
 App electron to have video wallpaper in linux.
 
-<a target="_blank" href="https://www.youtube.com/watch?v=WL7wtfSnvZs">
-  <img title="See video" src="https://img.youtube.com/vi/WL7wtfSnvZs/maxresdefault.jpg" width="100%" />
-</a>
-
-
 |<img src="https://raw.githubusercontent.com/htron-dev/wallpaper-fire/master/docs/assets/images/print-1.png" width="100%" /> |  <img src="https://raw.githubusercontent.com/htron-dev/wallpaper-fire/master/docs/assets/images/print-2.png" width="100%" /> | <img src="https://raw.githubusercontent.com/htron-dev/wallpaper-fire/master/docs/assets/images/print-3.png" width="100%" />
 |:-------------------------:|:-------------------------:|:-------------------------:|
 
