@@ -1,3 +1,5 @@
+## :warning: Not suported anymore
+
 # Wallpaper-fire
 
 
